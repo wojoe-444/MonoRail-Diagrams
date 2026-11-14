@@ -4,7 +4,7 @@ The standard for drawing **process and flow diagrams** in MonoRail apps: **BPMN 
 
 The goal: point an agent here and have it turn a described process into a diagram that matches every other MonoRail diagram, quickly and without guesswork.
 
-> Status: the written standard is in place. Examples, the explainer, tooling and the agent entry point are still to come. See [PLAN.md](PLAN.md) for the plan and the current state.
+> Status: the written standard, the tools and three worked examples are in place. The explainer, the agent skill and the agent test are still to come. See [PLAN.md](PLAN.md) for the plan and the current state.
 
 ## Which notation?
 
@@ -31,6 +31,12 @@ The goal: point an agent here and have it turn a described process into a diagra
 
 Every rule has an ID (`BP-3`, `NM-4`, `BL-2` and so on) so reviews, tools and agents can cite it.
 
+## Examples and tools
+
+- [examples/](examples/README.md): the poem loop, a Chat turn, and the spending limit (the blend of BPMN and DMN).
+- [templates/](templates/process.bpmn): start a new `.bpmn` or `.dmn` from these.
+- [tools/](tools/README.md): `node diagrams.mjs build <folder>` checks the rules, lays the diagram out and writes the SVG.
+
 ## For agents
 
 Start at [AGENTS.md](AGENTS.md).
@@ -41,7 +47,9 @@ Start at [AGENTS.md](AGENTS.md).
 AGENTS.md      agent entry point
 PLAN.md        the plan and its status
 docs/          the standard
-examples/      worked examples (the poem loop so far)
+examples/      worked examples with briefs and renders
+templates/     starting files for a process and a decision
+tools/         check, lay out and render (Node)
 explainer/     the explainer page (a first draft so far)
 ```
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template for a DMN decision. Copy to docs/diagrams/<process>/<decision>.dmn in the app's repo,
+  rename every "example" id, and fill it in. Write NO <dmndi:...> coordinates: run
+  `node tools/diagrams.mjs build <folder>` and they are added.
+  Every input and output is typed; string inputs and outputs list their allowed values;
+  the linter proves the table is complete and (for UNIQUE) that no two rules overlap.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="defs_example" name="Example answer" namespace="https://monorail.invalid/diagrams/example">
+  <inputData id="in_example" name="Example fact">
+    <description>What this fact is and where it comes from.</description>
+    <variable id="var_example" name="Example fact" typeRef="boolean" />
+  </inputData>
+
+  <decision id="dec_exampleAnswer" name="Example answer">
+    <description>The question this decision answers, in one sentence.</description>
+    <variable id="var_exampleAnswer" name="Example answer" typeRef="string" />
+    <informationRequirement id="req_example"><requiredInput href="#in_example" /></informationRequirement>
+    <decisionTable id="table_exampleAnswer" hitPolicy="UNIQUE">
+      <input id="col_example" label="Example fact">
+        <inputExpression id="expr_example" typeRef="boolean"><text>Example fact</text></inputExpression>
+        <inputValues id="vals_example"><text>true,false</text></inputValues>
+      </input>
+      <output id="col_answer" label="Answer" typeRef="string">
+        <outputValues id="vals_answer"><text>"yes","no"</text></outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>Why this row says yes.</description>
+        <inputEntry id="r1_c1"><text>true</text></inputEntry>
+        <outputEntry id="r1_o1"><text>"yes"</text></outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>Why this row says no.</description>
+        <inputEntry id="r2_c1"><text>false</text></inputEntry>
+        <outputEntry id="r2_o1"><text>"no"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

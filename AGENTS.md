@@ -6,13 +6,13 @@ You were pointed here because someone wants a process or a decision drawn. MonoR
 
 1. Read [docs/bpmn-vs-dmn.md](docs/bpmn-vs-dmn.md). It decides BPMN, DMN, both, or "not covered".
 2. Follow [docs/process-to-diagram.md](docs/process-to-diagram.md). Write the **brief** first, then build from it.
-3. Build only with the allowed elements: [docs/bpmn-profile.md](docs/bpmn-profile.md) and [docs/dmn-profile.md](docs/dmn-profile.md). Names and IDs: [docs/naming.md](docs/naming.md). Layout: [docs/layout.md](docs/layout.md).
-4. Check against [docs/checklist.md](docs/checklist.md) (and the linter, once it exists; see [PLAN.md](PLAN.md)).
+3. Build only with the allowed elements: [docs/bpmn-profile.md](docs/bpmn-profile.md) and [docs/dmn-profile.md](docs/dmn-profile.md). Names and IDs: [docs/naming.md](docs/naming.md). Start from a file in [templates/](templates/process.bpmn) and write only elements and flows, **no coordinates**; the happy path's flow is the first one at every split ([docs/layout.md](docs/layout.md)). Copy the style of the [examples](examples/README.md).
+4. Run `node tools/diagrams.mjs build <your folder>` (once: `npm install` in `tools/`; see [tools/README.md](tools/README.md)). It lints, lays out and renders. Fix every error it names (each cites a rule), then look at the render and go through [docs/checklist.md](docs/checklist.md).
 5. Save in the app's repo under `docs/diagrams/<process>/` and say which notation you chose and why, in one sentence.
 
 ## Non-negotiable
 
-- **Real files, not pictures.** Produce `.bpmn` / `.dmn` XML. Never hand-draw SVG or PNG as the deliverable, and never use Mermaid for processes. An image is only a render of the XML.
+- **Real files, not pictures.** Produce `.bpmn` / `.dmn` XML. Never hand-draw SVG or PNG as the deliverable, and never use Mermaid for processes. An image is only a render of the XML, made by the tool.
 - **Do not invent steps.** If the source does not say, add an open question to the brief.
 - **Only the allowed elements.** If you need one that is not listed, stop and ask; the standard changes in one place, not diagram by diagram.
 - **Blend one way only.** A business rule task references a decision, and an exclusive gateway routes on its output ([BL-1 to BL-5](docs/bpmn-vs-dmn.md#the-blend)).

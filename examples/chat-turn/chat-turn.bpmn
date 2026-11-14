@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs_chatTurn" targetNamespace="https://monorail.invalid/diagrams/chat-turn">
+  <bpmn:collaboration id="collab_chatTurn">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_chatTurn" />
+    <bpmn:participant id="pool_user" name="User" />
+    <bpmn:messageFlow id="msg_message" name="Message" sourceRef="pool_user" targetRef="evt_messageSent" />
+    <bpmn:messageFlow id="msg_stop" name="Stop" sourceRef="pool_user" targetRef="bnd_stopRequested" />
+  </bpmn:collaboration>
+  <bpmn:process id="proc_chatTurn" isExecutable="false">
+    <bpmn:documentation>Purpose: show the life of one Chat turn, including the one-turn-per-chat rule, the Stop button and the 30 minute limit. Trigger: the user sends a message.</bpmn:documentation>
+    <bpmn:startEvent id="evt_messageSent" name="Message sent">
+      <bpmn:messageEventDefinition id="def_messageSent" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="gw_chatBusy" name="Chat already running a turn?" />
+    <bpmn:serviceTask id="task_runTurn" name="Run turn in worker" />
+    <bpmn:boundaryEvent id="bnd_timeout" name="30 min" attachedToRef="task_runTurn">
+      <bpmn:timerEventDefinition id="def_timeout" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="bnd_stopRequested" name="Stop" attachedToRef="task_runTurn">
+      <bpmn:messageEventDefinition id="def_stopRequested" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="task_killWorker" name="Kill worker process tree" />
+    <bpmn:endEvent id="evt_turnFinished" name="Turn finished" />
+    <bpmn:endEvent id="evt_messageRefused" name="Message refused" />
+    <bpmn:endEvent id="evt_turnTimedOut" name="Turn timed out" />
+    <bpmn:endEvent id="evt_turnStopped" name="Turn stopped" />
+    <bpmn:sequenceFlow id="flow_messageSent_to_chatBusy" sourceRef="evt_messageSent" targetRef="gw_chatBusy" />
+    <bpmn:sequenceFlow id="flow_chatBusy_to_runTurn" name="No" sourceRef="gw_chatBusy" targetRef="task_runTurn" />
+    <bpmn:sequenceFlow id="flow_chatBusy_to_messageRefused" name="Yes" sourceRef="gw_chatBusy" targetRef="evt_messageRefused" />
+    <bpmn:sequenceFlow id="flow_runTurn_to_turnFinished" sourceRef="task_runTurn" targetRef="evt_turnFinished" />
+    <bpmn:sequenceFlow id="flow_timeout_to_turnTimedOut" sourceRef="bnd_timeout" targetRef="evt_turnTimedOut" />
+    <bpmn:sequenceFlow id="flow_stopRequested_to_killWorker" sourceRef="bnd_stopRequested" targetRef="task_killWorker" />
+    <bpmn:sequenceFlow id="flow_killWorker_to_turnStopped" sourceRef="task_killWorker" targetRef="evt_turnStopped" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram_collab_chatTurn">
+    <bpmndi:BPMNPlane id="plane_collab_chatTurn" bpmnElement="collab_chatTurn">
+      <bpmndi:BPMNShape id="pool_app_di" bpmnElement="pool_app" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="612" height="472" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_messageSent_di" bpmnElement="evt_messageSent">
+        <dc:Bounds x="80" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="57" y="53" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_chatBusy_di" bpmnElement="gw_chatBusy">
+        <dc:Bounds x="166" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="141" y="32" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_runTurn_di" bpmnElement="task_runTurn">
+        <dc:Bounds x="266" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_messageRefused_di" bpmnElement="evt_messageRefused">
+        <dc:Bounds x="298" y="426" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="214" y="465" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_killWorker_di" bpmnElement="task_killWorker">
+        <dc:Bounds x="416" y="286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_turnFinished_di" bpmnElement="evt_turnFinished">
+        <dc:Bounds x="448" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="111" width="89" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_turnTimedOut_di" bpmnElement="evt_turnTimedOut">
+        <dc:Bounds x="448" y="190" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="419" y="229" width="95" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_turnStopped_di" bpmnElement="evt_turnStopped">
+        <dc:Bounds x="566" y="308" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="543" y="347" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bnd_timeout_di" bpmnElement="bnd_timeout">
+        <dc:Bounds x="268" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="151" width="45" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bnd_stopRequested_di" bpmnElement="bnd_stopRequested">
+        <dc:Bounds x="328" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="311" y="151" width="33" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_user_di" bpmnElement="pool_user" isHorizontal="true">
+        <dc:Bounds x="20" y="602" width="612" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_messageSent_to_chatBusy_di" bpmnElement="flow_messageSent_to_chatBusy">
+        <di:waypoint x="116" y="90" />
+        <di:waypoint x="166" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_chatBusy_to_runTurn_di" bpmnElement="flow_chatBusy_to_runTurn">
+        <di:waypoint x="216" y="90" />
+        <di:waypoint x="266" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="220" y="72" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_chatBusy_to_messageRefused_di" bpmnElement="flow_chatBusy_to_messageRefused">
+        <di:waypoint x="191" y="115" />
+        <di:waypoint x="191" y="444" />
+        <di:waypoint x="298" y="444" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="197" y="426" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_runTurn_to_turnFinished_di" bpmnElement="flow_runTurn_to_turnFinished">
+        <di:waypoint x="366" y="90" />
+        <di:waypoint x="448" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_timeout_to_turnTimedOut_di" bpmnElement="flow_timeout_to_turnTimedOut">
+        <di:waypoint x="286" y="148" />
+        <di:waypoint x="286" y="208" />
+        <di:waypoint x="448" y="208" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_stopRequested_to_killWorker_di" bpmnElement="flow_stopRequested_to_killWorker">
+        <di:waypoint x="364" y="130" />
+        <di:waypoint x="376" y="130" />
+        <di:waypoint x="376" y="326" />
+        <di:waypoint x="416" y="326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_killWorker_to_turnStopped_di" bpmnElement="flow_killWorker_to_turnStopped">
+        <di:waypoint x="516" y="326" />
+        <di:waypoint x="566" y="326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_message_di" bpmnElement="msg_message">
+        <di:waypoint x="98" y="602" />
+        <di:waypoint x="98" y="108" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="104" y="347" width="51" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_stop_di" bpmnElement="msg_stop">
+        <di:waypoint x="346" y="602" />
+        <di:waypoint x="346" y="148" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="367" width="33" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

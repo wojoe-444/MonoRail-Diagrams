@@ -26,8 +26,9 @@ The yes/no list used to review a diagram, by a person, by the phase 5 scoring, a
 - [ ] The view has 15 shapes or fewer (BP-11).
 - [ ] Loops use a marker for counted or collection repeats, a gateway only for decided repeats (BP-12).
 - [ ] The process documents its purpose and trigger (BP-14).
+- [ ] A call that waits for an answer is one task with two message flows (BP-18).
 - [ ] Sub-processes have their own start and end events (BP-16).
-- [ ] The layout follows LY-1 to LY-10: left to right, straight happy path, no crossing sequence flows, standard sizes.
+- [ ] The layout follows LY-1 to LY-10: left to right, straight happy path, no crossing sequence flows, standard sizes. (`build` applies it; look at the render to confirm.)
 
 ## Blend
 

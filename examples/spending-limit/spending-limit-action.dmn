@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="defs_spendingLimitAction" name="Spending limit action" namespace="https://monorail.invalid/diagrams/spending-limit">
+  <inputData id="in_limitEnabled" name="Limit enabled">
+    <variable id="var_limitEnabled" name="Limit enabled" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_shareSpent" name="Share spent">
+    <description>Percent of the limit that is closest to being reached (the daily or the monthly one).</description>
+    <variable id="var_shareSpent" name="Share spent" typeRef="number" />
+  </inputData>
+  <inputData id="in_overLimitBehaviour" name="Over-limit behaviour">
+    <description>The setting for what happens at the limit: stop new turns, or only warn.</description>
+    <variable id="var_overLimitBehaviour" name="Over-limit behaviour" typeRef="string" />
+  </inputData>
+  <inputData id="in_oneMoreTurnAllowed" name="One more turn allowed">
+    <description>True after the user chose "Allow one more turn".</description>
+    <variable id="var_oneMoreTurnAllowed" name="One more turn allowed" typeRef="boolean" />
+  </inputData>
+  <decision id="dec_spendingLimitAction" name="Spending limit action">
+    <description>What should MonoRail do with a new turn, given the spending limit and how much of it is spent?</description>
+    <variable id="var_spendingLimitAction" name="Spending limit action" typeRef="string" />
+    <informationRequirement id="req_limitEnabled">
+      <requiredInput href="#in_limitEnabled" />
+    </informationRequirement>
+    <informationRequirement id="req_shareSpent">
+      <requiredInput href="#in_shareSpent" />
+    </informationRequirement>
+    <informationRequirement id="req_overLimitBehaviour">
+      <requiredInput href="#in_overLimitBehaviour" />
+    </informationRequirement>
+    <informationRequirement id="req_oneMoreTurnAllowed">
+      <requiredInput href="#in_oneMoreTurnAllowed" />
+    </informationRequirement>
+    <decisionTable id="table_spendingLimitAction">
+      <input id="col_limitEnabled" label="Limit enabled">
+        <inputExpression id="expr_limitEnabled" typeRef="boolean">
+          <text>Limit enabled</text>
+        </inputExpression>
+        <inputValues id="vals_limitEnabled">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_shareSpent" label="Share spent">
+        <inputExpression id="expr_shareSpent" typeRef="number">
+          <text>Share spent</text>
+        </inputExpression>
+      </input>
+      <input id="col_overLimitBehaviour" label="Over-limit behaviour">
+        <inputExpression id="expr_overLimitBehaviour" typeRef="string">
+          <text>Over-limit behaviour</text>
+        </inputExpression>
+        <inputValues id="vals_overLimitBehaviour">
+          <text>"stop","warn"</text>
+        </inputValues>
+      </input>
+      <input id="col_oneMoreTurnAllowed" label="One more turn allowed">
+        <inputExpression id="expr_oneMoreTurnAllowed" typeRef="boolean">
+          <text>One more turn allowed</text>
+        </inputExpression>
+        <inputValues id="vals_oneMoreTurnAllowed">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <output id="col_action" label="Action" typeRef="string">
+        <outputValues id="vals_action">
+          <text>"allow","warn","stop"</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>No limit is set, so nothing is checked.</description>
+        <inputEntry id="r1_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r1_c2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r1_o1">
+          <text>"allow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>Below the first warning level.</description>
+        <inputEntry id="r2_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r2_c2">
+          <text>&lt; 50</text>
+        </inputEntry>
+        <inputEntry id="r2_c3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r2_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r2_o1">
+          <text>"allow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>Warnings show as 50, 80 and 90 percent are crossed; this table calls all of that "warn".</description>
+        <inputEntry id="r3_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r3_c2">
+          <text>[50..100)</text>
+        </inputEntry>
+        <inputEntry id="r3_c3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r3_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r3_o1">
+          <text>"warn"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_4">
+        <description>At the limit, this setting only warns.</description>
+        <inputEntry id="r4_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r4_c2">
+          <text>&gt;= 100</text>
+        </inputEntry>
+        <inputEntry id="r4_c3">
+          <text>"warn"</text>
+        </inputEntry>
+        <inputEntry id="r4_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r4_o1">
+          <text>"warn"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_5">
+        <description>"Allow one more turn" lets exactly one turn through.</description>
+        <inputEntry id="r5_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r5_c2">
+          <text>&gt;= 100</text>
+        </inputEntry>
+        <inputEntry id="r5_c3">
+          <text>"stop"</text>
+        </inputEntry>
+        <inputEntry id="r5_c4">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="r5_o1">
+          <text>"allow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_6">
+        <description>At the limit, new turns are refused. A running turn is never cut off.</description>
+        <inputEntry id="r6_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r6_c2">
+          <text>&gt;= 100</text>
+        </inputEntry>
+        <inputEntry id="r6_c3">
+          <text>"stop"</text>
+        </inputEntry>
+        <inputEntry id="r6_c4">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="r6_o1">
+          <text>"stop"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="diagram_defs_spendingLimitAction">
+      <dmndi:DMNShape id="in_limitEnabled_di" dmnElementRef="in_limitEnabled">
+        <dc:Bounds height="45" width="125" x="30" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_shareSpent_di" dmnElementRef="in_shareSpent">
+        <dc:Bounds height="45" width="125" x="195" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_overLimitBehaviour_di" dmnElementRef="in_overLimitBehaviour">
+        <dc:Bounds height="45" width="125" x="360" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_oneMoreTurnAllowed_di" dmnElementRef="in_oneMoreTurnAllowed">
+        <dc:Bounds height="45" width="125" x="525" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dec_spendingLimitAction_di" dmnElementRef="dec_spendingLimitAction">
+        <dc:Bounds height="80" width="180" x="250" y="30" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="req_limitEnabled_di" dmnElementRef="req_limitEnabled">
+        <di:waypoint x="93" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_shareSpent_di" dmnElementRef="req_shareSpent">
+        <di:waypoint x="258" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_overLimitBehaviour_di" dmnElementRef="req_overLimitBehaviour">
+        <di:waypoint x="423" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_oneMoreTurnAllowed_di" dmnElementRef="req_oneMoreTurnAllowed">
+        <di:waypoint x="588" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

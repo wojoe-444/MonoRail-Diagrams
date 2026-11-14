@@ -1,0 +1,22 @@
+{
+  "name": "monorail-diagrams-tools",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Lint, lay out and render MonoRail BPMN and DMN diagrams.",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bpmn-js": "18.31.1",
+    "bpmn-moddle": "10.3.1",
+    "dmn-js": "18.0.3",
+    "dmn-moddle": "12.2.1",
+    "playwright-core": "1.65.1"
+  },
+  "scripts": {
+    "check": "node diagrams.mjs check ../examples",
+    "build": "node diagrams.mjs build",
+    "test": "node --test"
+  }
+}

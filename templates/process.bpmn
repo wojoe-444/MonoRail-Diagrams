@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template for a BPMN process. Copy to docs/diagrams/<process>/<process>.bpmn in the app's repo,
+  rename every "example" id, and fill it in. Write NO <bpmndi:...> coordinates: run
+  `node tools/diagrams.mjs build <folder>` and they are added.
+  The FIRST sequence flow leaving a gateway (in file order) continues the straight main line.
+-->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="defs_example" targetNamespace="https://monorail.invalid/diagrams/example">
+  <bpmn:collaboration id="collab_example">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_example" />
+    <!-- A participant you only talk to is a black-box pool: no processRef.
+    <bpmn:participant id="pool_other" name="Other participant" />
+    <bpmn:messageFlow id="msg_request" name="Request" sourceRef="task_doSomething" targetRef="pool_other" />
+    <bpmn:messageFlow id="msg_reply" name="Reply" sourceRef="pool_other" targetRef="task_doSomething" />
+    -->
+  </bpmn:collaboration>
+
+  <bpmn:process id="proc_example" isExecutable="false">
+    <bpmn:documentation>Purpose: one sentence on what this diagram explains. Trigger: one sentence on what starts it.</bpmn:documentation>
+
+    <bpmn:startEvent id="evt_started" name="Process started" />
+    <bpmn:serviceTask id="task_doSomething" name="Do something" />
+    <bpmn:endEvent id="evt_finished" name="Process finished" />
+
+    <bpmn:sequenceFlow id="flow_started_to_doSomething" sourceRef="evt_started" targetRef="task_doSomething" />
+    <bpmn:sequenceFlow id="flow_doSomething_to_finished" sourceRef="task_doSomething" targetRef="evt_finished" />
+  </bpmn:process>
+</bpmn:definitions>

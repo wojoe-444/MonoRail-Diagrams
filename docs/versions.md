@@ -23,9 +23,11 @@ When the tools read a newer DMN version, move the pin here, check [dmn-profile.m
 | `dmn-js` | 18.0.3 | Render DMN |
 | `bpmnlint` | 12.1.1 | Lint BPMN |
 | `dmnlint` | 2.0.0 | Lint DMN |
-| `bpmn-auto-layout` | 1.3.0 | Lay out BPMN that has no coordinates |
+| `playwright-core` | 1.65.1 | Drive the installed Edge or Chrome to render SVG (no browser is downloaded) |
 
-These are the latest versions on npm on the check date. Whether `bpmn-auto-layout` copes with pools, message flows, data stores and loop markers is **not yet verified**; phase 3 in the [plan](../PLAN.md) settles it.
+These are the latest versions on npm on the check date, pinned exactly in `tools/package.json`. `bpmnlint` and `dmnlint` are listed because they exist, but the linter here is our own (it checks this standard's rules, which theirs do not).
+
+**Checked and rejected:** `bpmn-auto-layout` 1.3.0 ignores pools and message flows, draws no edges, lays out top to bottom and stacks the contents of an expanded sub-process on top of each other. The layouter in `tools/layout-bpmn.mjs` replaces it; see [tools/README.md](../tools/README.md).
 
 ## How to update this page
 

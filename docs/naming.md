@@ -36,10 +36,16 @@ Names are where two agents most often drift apart, so they are rules here. A nam
 | Gateway | `gw_` | `gw_limitReached` |
 | Sequence flow | `flow_` + from + `_to_` + to | `flow_writePoem_to_gradePoem` |
 | Message flow | `msg_` | `msg_poem` |
-| Data object, data store | `data_` | `data_writerPrompt` |
+| Data object or data store reference | `data_` | `data_writerPrompt` |
+| Data store or data object definition | `store_`, `obj_` | `store_writerPrompt` |
+| Data association | `assoc_` | `assoc_reviseToWriterPrompt` |
+| Definitions, collaboration | `defs_`, `collab_` | `defs_poemLoop`, `collab_poemLoop` |
+| Event definition | `def_` | `def_timeout` |
 | Decision | `dec_` | `dec_spendingLimitAction` |
 | Decision input | `in_` | `in_shareSpent` |
 | Business knowledge model | `bkm_` | `bkm_roundToStep` |
+| Knowledge source | `src_` | `src_pricingPolicy` |
+| DMN requirement | `req_` | `req_shareSpent` |
 
 ## Files and folders
 

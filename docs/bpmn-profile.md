@@ -40,10 +40,11 @@ Adding an element to the profile is a change to this standard: edit this table, 
 - **BP-11. A view holds at most 15 shapes.** Count tasks, events, gateways, data and pools; do not count labels or annotations. Beyond 15, collapse a part into an embedded sub-process, or a call activity when another process reuses it. Why: past this size nobody checks the diagram.
 - **BP-12. Loops.** Use a loop or multi-instance marker when the same steps repeat over a count or a collection. Draw a loop-back flow through a gateway only when the repeat depends on a decision. The three rounds in the poem loop are a marker.
 - **BP-13. Show data only when it explains the flow.** A data store for a value that survives between runs or rounds; a data object for a value that decides who can proceed or what happens next. Skip the rest.
-- **BP-14. Every process says what it is for.** The process carries `documentation` with one sentence for its purpose and one for its trigger.
+- **BP-14. Every process says what it is for.** The process carries `documentation` in the form `Purpose: <one sentence>. Trigger: <one sentence>.` The linter looks for both words.
 - **BP-15. Business rule tasks follow the blend rules.** They reference a decision and are followed by a gateway, as in [bpmn-vs-dmn.md](bpmn-vs-dmn.md#the-blend) (BL-1, BL-2).
 - **BP-16. Sub-processes have their own start and end.** An embedded sub-process contains a start event and at least one end event.
 - **BP-17. No colour.** No fill or stroke colours in the file. Colour never carries meaning here. (An explainer may colour things to teach; the diagram files do not.)
+- **BP-18. A call that waits for an answer is one task with two message flows.** The request leaves the task and the reply returns to the same task, as in the [poem loop](../examples/poem-loop/poem-loop.bpmn). Use a send task and a receive task, or message events, only when the process does other work between sending and receiving. Why: two tasks for one call double the shapes and hide that nothing else happens in between.
 
 ## Participants in a MonoRail process
 

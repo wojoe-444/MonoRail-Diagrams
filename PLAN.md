@@ -113,8 +113,8 @@ Adopt in the MonoRail repo: add the pointer to its `CLAUDE.md`, and link it from
 | --- | --- | --- |
 | 0 Setup and plan | done | |
 | 1 Written standard | done | `docs/` (9 pages), `README.md`, `AGENTS.md`. Versions and bpmn-js default shape sizes verified 2026-11-14. Links checked. Spending-limit decision table rows still to be written from MonoRail's own description (phase 2). |
-| 2 Examples and explainer | not started | |
-| 3 Tooling | not started | |
+| 2 Examples and explainer | partly done | Done 2026-11-14: poem loop, Chat turn and spending limit (the blend) as real files with briefs and renders. Still to do: the explainer page (static, in `explainer/`). |
+| 3 Tooling | done | `tools/`: lint (with decision-table evaluation and blend checks), own layouter, renderer, 20 tests. `bpmn-auto-layout` tested and rejected, see `docs/versions.md` and `tools/README.md`. Found while building: BP-18 added, templates added. |
 | 4 Agent entry point | not started | |
 | 5 Prove it | not started | |
 
