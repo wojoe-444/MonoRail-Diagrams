@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="defs_sendAction" name="Send action" namespace="https://monorail.invalid/diagrams/send-to-chat">
+  <inputData id="in_targetIsCoordinator" name="Target is a Coordinator chat">
+    <description>The chat the message is for is a Coordinator chat.</description>
+    <variable id="var_targetIsCoordinator" name="Target is a Coordinator chat" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_logChangedRecently" name="Log changed in the last minute">
+    <description>The chat log changed within the last minute.</description>
+    <variable id="var_logChangedRecently" name="Log changed in the last minute" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_turnRunning" name="Chat already running a turn">
+    <description>A turn is running in the chat (its lock file is held).</description>
+    <variable id="var_turnRunning" name="Chat already running a turn" typeRef="boolean" />
+  </inputData>
+  <decision id="dec_sendAction" name="Send action">
+    <description>Should the Coordinator's message be run as a child turn in the target chat, or refused?</description>
+    <variable id="var_sendAction" name="Send action" typeRef="string" />
+    <informationRequirement id="req_targetIsCoordinator">
+      <requiredInput href="#in_targetIsCoordinator" />
+    </informationRequirement>
+    <informationRequirement id="req_logChangedRecently">
+      <requiredInput href="#in_logChangedRecently" />
+    </informationRequirement>
+    <informationRequirement id="req_turnRunning">
+      <requiredInput href="#in_turnRunning" />
+    </informationRequirement>
+    <decisionTable id="table_sendAction">
+      <input id="col_targetIsCoordinator" label="Target is a Coordinator chat">
+        <inputExpression id="expr_targetIsCoordinator" typeRef="boolean">
+          <text>Target is a Coordinator chat</text>
+        </inputExpression>
+        <inputValues id="vals_targetIsCoordinator">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_logChangedRecently" label="Log changed in the last minute">
+        <inputExpression id="expr_logChangedRecently" typeRef="boolean">
+          <text>Log changed in the last minute</text>
+        </inputExpression>
+        <inputValues id="vals_logChangedRecently">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_turnRunning" label="Chat already running a turn">
+        <inputExpression id="expr_turnRunning" typeRef="boolean">
+          <text>Chat already running a turn</text>
+        </inputExpression>
+        <inputValues id="vals_turnRunning">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <output id="col_action" label="Action" typeRef="string">
+        <outputValues id="vals_action">
+          <text>"allow","refuse"</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>A Coordinator chat is never a target.</description>
+        <inputEntry id="r1_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r1_c2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r1_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>A chat whose log changed in the last minute is refused.</description>
+        <inputEntry id="r2_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r2_c2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r2_c3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r2_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>Only one turn per chat can run at a time.</description>
+        <inputEntry id="r3_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r3_c2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r3_c3">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="r3_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_4">
+        <description>The message runs as a child turn.</description>
+        <inputEntry id="r4_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r4_c2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r4_c3">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="r4_o1">
+          <text>"allow"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="diagram_defs_sendAction">
+      <dmndi:DMNShape id="in_targetIsCoordinator_di" dmnElementRef="in_targetIsCoordinator">
+        <dc:Bounds height="45" width="125" x="30" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_logChangedRecently_di" dmnElementRef="in_logChangedRecently">
+        <dc:Bounds height="45" width="125" x="195" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_turnRunning_di" dmnElementRef="in_turnRunning">
+        <dc:Bounds height="45" width="125" x="360" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dec_sendAction_di" dmnElementRef="dec_sendAction">
+        <dc:Bounds height="80" width="180" x="168" y="30" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="req_targetIsCoordinator_di" dmnElementRef="req_targetIsCoordinator">
+        <di:waypoint x="93" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_logChangedRecently_di" dmnElementRef="req_logChangedRecently">
+        <di:waypoint x="258" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_turnRunning_di" dmnElementRef="req_turnRunning">
+        <di:waypoint x="423" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -36,6 +36,7 @@ The yes/no list used to review a diagram, by a person, by the phase 5 scoring, a
 - [ ] A business rule task references its decision as `<file>.dmn#<decisionId>` and the reference resolves (BL-1).
 - [ ] An exclusive gateway follows it, with one flow per output value spelled as in the table (BL-2).
 - [ ] The process does not restate the rules and the decision does not mention tasks or order (BL-3, BL-4).
+- [ ] A request that is only a mapping from facts to an answer produced a `.dmn` and no process (BL-11).
 
 ## DMN
 

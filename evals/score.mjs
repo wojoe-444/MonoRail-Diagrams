@@ -1,6 +1,6 @@
 // Score agent output against the eval cases.
 //
-//   node evals/score.mjs <run folder>          one subfolder per case id, holding what the agent wrote
+//   node evals/score.mjs <run folder> [--only id,id]   one subfolder per case id, holding what the agent wrote
 //
 // A case passes when ALL of these hold (each is mechanical; nothing here judges taste):
 //   files    the notation the case expects has a file (.bpmn, .dmn, or both)
@@ -106,6 +106,7 @@ export async function scoreCase(def, dir) {
   if (x.minRules && rules < x.minRules) problems.push(`${rules} rule(s), expected at least ${x.minRules}`);
   if (x.blend && !(ruleTasks > 0 && dmn.length > 0)) problems.push('expected a business rule task calling a decision');
   if (x.noBlend && ruleTasks > 0 && !dmn.length) problems.push('business rule task without a decision file');
+  if (want === 'dmn' && bpmn.length) problems.push('a process was added around a lone decision (BL-11)');
   add('expect', problems.length === 0, problems.join('; '));
 
   return { id: def.id, pass: checks.every((c) => c.ok), checks };
@@ -130,7 +131,8 @@ if (process.argv[1] && fileURLToPathSafe(process.argv[1]) === fileURLToPath(impo
   const run = process.argv[2];
   if (!run) { console.error('usage: node evals/score.mjs <run folder>'); process.exit(2); }
   const results = [];
-  for (const def of loadCases()) results.push(await scoreCase(def, path.join(run, def.id)));
+  const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1].split(',') : null;
+  for (const def of loadCases().filter((d) => !only || only.includes(d.id))) results.push(await scoreCase(def, path.join(run, def.id)));
   const md = markdown(results);
   console.log(md);
   fs.writeFileSync(path.join(run, 'results.md'), md);

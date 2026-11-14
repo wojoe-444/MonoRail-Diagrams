@@ -53,7 +53,7 @@ Rules that need judgement (task names as verb plus object, whether a gateway sho
 - `tables.mjs`: the decision table drawn as SVG.
 - `render.mjs`: `bpmn-js` and `dmn-js` viewers in a headless browser, then a white background, a title above and the source file name below.
 
-Limits, reported with a clear message instead of guessed: lanes, text annotations, several white-box pools. Message flows are drawn straight down to the black-box pools below, so they can cross lines of lower rows.
+Limits, reported with a clear message instead of guessed: lanes, text annotations, several white-box pools. Message flows run straight down to the black-box pools below; if that would pass through a shape they jog sideways to a clear column. With several black-box pools stacked, a flow to a lower pool crosses the upper ones (known; message flows may cross, LY-5).
 
 ## Files
 

@@ -3,4 +3,4 @@ out/
 *.log
 .env*
 *.local.json
-examples/**/*.png
+*.png

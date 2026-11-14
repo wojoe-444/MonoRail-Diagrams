@@ -395,11 +395,34 @@ function placeSequenceLabel(el, pts, placed) {
   return r;
 }
 
+/**
+ * A message line runs straight down from its node to the pool. If that would run through another
+ * shape (say an end event in a row below), go down a little, jog sideways to the nearest clear
+ * column, and carry on down.
+ */
+function routeMessage(a, z, nodeId, boxes) {
+  const hits = (x, y0, y1) => boxes.some((o) => o.id !== nodeId && x > o.x - 6 && x < o.x + o.w + 6 && Math.max(y0, y1) > o.y && Math.min(y0, y1) < o.y + o.h);
+  if (!hits(a[0], a[1], z[1])) return [a, z];
+  const y1 = a[1] + 24;
+  const jogBlocked = (xa, xb) => boxes.some((o) => o.id !== nodeId && y1 > o.y - 4 && y1 < o.y + o.h + 4 && Math.max(xa, xb) > o.x && Math.min(xa, xb) < o.x + o.w);
+  for (let d = 24; d <= 240; d += 24) {
+    for (const xc of [a[0] + d, a[0] - d]) {
+      if (!hits(xc, y1, z[1]) && !jogBlocked(a[0], xc)) return [a, [a[0], y1], [xc, y1], [xc, z[1]]];
+    }
+  }
+  return [a, z];
+}
+
 function placeMessageLabel(mf, pts, obs, placed) {
   const [w, h] = labelSize(mf.name);
-  const x = pts[0][0];
-  const lo = Math.min(pts[0][1], pts[1][1]);
-  const hi = Math.max(pts[0][1], pts[1][1]);
+  // the long vertical leg is the one that carries the label
+  let leg = [pts[0], pts[1]];
+  for (let i = 0; i + 1 < pts.length; i++) {
+    if (pts[i][0] === pts[i + 1][0] && Math.abs(pts[i][1] - pts[i + 1][1]) > Math.abs(leg[0][1] - leg[1][1])) leg = [pts[i], pts[i + 1]];
+  }
+  const x = leg[0][0];
+  const lo = Math.min(leg[0][1], leg[1][1]);
+  const hi = Math.max(leg[0][1], leg[1][1]);
   const mid = (lo + hi) / 2;
   const reply = mf.sourceRef.$type === 'bpmn:Participant';
   const xs = reply ? [x + 6, x - w - 6] : [x - w - 6, x + 6];
@@ -448,11 +471,12 @@ export async function layoutBpmn(xml) {
     if (white.length !== 1) throw new LayoutError(`the layouter supports exactly one white-box pool, found ${white.length}`);
     const wp = white[0];
     const L = layoutContainer(wp.processRef);
-    const poolW = POOL_BAND + 2 * POOL_PAD + L.w;
+    // extra room on the right: a name under the last event can be wider than the event
+    const poolW = POOL_BAND + 100 + L.w;
     const poolH = L.h + 2 * POOL_PAD;
     const px = MARGIN;
     const py = MARGIN;
-    const ox = px + POOL_BAND + POOL_PAD;
+    const ox = px + POOL_BAND + 40; // room for the first event's name on the left
     const oy = py + POOL_PAD;
     const abs = new Map();
     const poolBox = { x: px, y: py, w: poolW, h: poolH };
@@ -477,6 +501,10 @@ export async function layoutBpmn(xml) {
       const nodeEl = mf.sourceRef.$type === 'bpmn:Participant' ? mf.targetRef : mf.sourceRef;
       slots.set(nodeEl.id, [...(slots.get(nodeEl.id) ?? []), mf]);
     }
+    // Shapes a message line must not run through (pools and expanded sub-processes are not obstacles).
+    const leafBoxes = shapes
+      .filter((s) => s.el.$type !== 'bpmn:Participant' && !s.extra?.isExpanded)
+      .map((s) => ({ id: s.el.id, ...s.b }));
     // Loop and multi-instance markers sit at the bottom centre of their shape; keep lines clear of them.
     const markers = L.shapes
       .filter((s) => s.el.loopCharacteristics)
@@ -498,7 +526,8 @@ export async function layoutBpmn(xml) {
         if (!pool) throw new LayoutError(`${mf.id}: pool ${mf.targetRef.id} has no shape`);
         const a = [x, nb.y + nb.h];
         const z = [x, pool.y];
-        edges.push({ el: mf, pts: mf.sourceRef.id === nodeId ? [a, z] : [z, a], kind: 'message' });
+        const down = routeMessage(a, z, nodeId, leafBoxes);
+        edges.push({ el: mf, pts: mf.sourceRef.id === nodeId ? down : down.slice().reverse(), kind: 'message' });
       });
     }
   }

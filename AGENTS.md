@@ -27,6 +27,7 @@ You were pointed here because someone wants a process or a decision drawn. MonoR
 | Start / end event | "Turn requested" / "Turn refused" (a state, past tense) |
 | Exclusive gateway | A question ending in "?"; flows carry the answers |
 | Gateway with 2 or more inputs, or 3 or more outcomes | Extract to DMN |
+| The request is only facts in, answer out | Deliver the `.dmn` alone, no wrapper process (BL-11) |
 | Timeout | Timer boundary event on the activity, duration in the label |
 | IDs | `task_writePoem`, `gw_limitReached`, `dec_spendingLimitAction` |
 | View size | At most 15 shapes; collapse into a sub-process beyond that |

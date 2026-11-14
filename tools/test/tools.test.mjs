@@ -262,3 +262,32 @@ test('every committed render is well-formed XML (a browser tab forgives what Git
     }
   } finally { await browser.close(); }
 });
+
+// ---------------------------------------------------------------- message flow routing
+
+test('no message flow runs through a shape (regression: an agent-made Chat diagram)', async () => {
+  const files = [
+    ...collectFiles([examples]).filter((f) => f.endsWith('.bpmn')),
+    path.join(here, 'fixtures', 'send-to-chat.bpmn'),
+  ];
+  for (const f of files) {
+    const { defs } = await parseBpmn(await layoutBpmn(fs.readFileSync(f, 'utf8')));
+    const els = defs.diagrams[0].plane.planeElement;
+    const boxes = els
+      .filter((e) => e.$type === 'bpmndi:BPMNShape' && !['bpmn:Participant', 'bpmn:SubProcess'].includes(e.bpmnElement.$type))
+      .map((e) => ({ id: e.bpmnElement.id, ...e.bounds }));
+    for (const edge of els.filter((e) => e.$type === 'bpmndi:BPMNEdge' && e.bpmnElement.$type === 'bpmn:MessageFlow')) {
+      const mf = edge.bpmnElement;
+      const own = new Set([mf.sourceRef.id, mf.targetRef.id]);
+      const pts = edge.waypoint;
+      for (let i = 0; i + 1 < pts.length; i++) {
+        const [a, b] = [pts[i], pts[i + 1]];
+        for (const box of boxes) {
+          if (own.has(box.id)) continue;
+          const hit = Math.max(a.x, b.x) > box.x && Math.min(a.x, b.x) < box.x + box.width && Math.max(a.y, b.y) > box.y && Math.min(a.y, b.y) < box.y + box.height;
+          assert.ok(!hit, `${path.basename(f)}: ${mf.id} runs through ${box.id}`);
+        }
+      }
+    }
+  }
+});

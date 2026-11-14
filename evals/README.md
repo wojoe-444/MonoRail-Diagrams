@@ -12,7 +12,7 @@ Five real MonoRail processes, each written the way a person would ask for it ([c
 | `remote-access` | DMN | Facts in, answer out, with no order at all. A table, not a flow. |
 | `backup-schedule` | BPMN | Timers, a verify step, a retry after a wait. |
 | `child-turn` | Both | The blend: a decision with three facts, wrapped in a short process (BL-1, BL-2). |
-| `connection-check` | DMN | A rules table that is easy to mistake for a flow. |
+| `connection-check` | DMN | A rules table that is easy to mistake for a flow, and easy to wrap in a pointless process (BL-11). |
 
 The requests restate facts from MonoRail's own documentation, nothing invented.
 
@@ -24,12 +24,13 @@ The requests restate facts from MonoRail's own documentation, nothing invented.
 2. **built**: the files carry layout and each has its `.svg` (so the build command ran).
 3. **brief**: `brief.md` exists with its required fields.
 4. **lint**: no linter errors and at most 3 warnings.
-5. **expect**: the case's own requirements (a timer event, enough end events, enough rules, a working blend).
+5. **expect**: the case's own requirements (a timer event, enough end events, enough rules, a working blend; for a DMN-only case, no process around it).
 
 It does not judge whether a diagram is a *good* description. Someone looks at the renders for that, and the run's notes say what they saw.
 
 ```
-node evals/score.mjs evals/runs/<date>
+node evals/score.mjs evals/runs/<date>                       all cases
+node evals/score.mjs evals/runs/<date> --only a-case,b-case  some cases
 ```
 
 Each run folder holds one subfolder per case with what the agent wrote, and the scorer writes `results.md` and `results.json` beside them.
