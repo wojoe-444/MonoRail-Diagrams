@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs_updateFlow" targetNamespace="https://monorail.invalid/diagrams/update-flow">
+  <bpmn:collaboration id="collab_updateFlow">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_updateFlow" />
+    <bpmn:participant id="pool_user" name="User" />
+    <bpmn:messageFlow id="msg_updateOffer" name="Update offer" sourceRef="task_showPopup" targetRef="pool_user" />
+    <bpmn:messageFlow id="msg_popupChoice" name="Pop-up choice" sourceRef="pool_user" targetRef="task_showPopup" />
+  </bpmn:collaboration>
+  <bpmn:process id="proc_updateFlow" isExecutable="false">
+    <bpmn:documentation>Purpose: show how MonoRail finds a new release on GitHub, offers it in a pop-up and hands over to the update steps. Trigger: 30 seconds after startup, then every 4 hours, the app checks GitHub releases. The pop-up offers three choices: Download and Restart, Ignore for six hours, or close it with the X.</bpmn:documentation>
+    <bpmn:startEvent id="evt_checkDue" name="30 s after start or 4 h passed">
+      <bpmn:timerEventDefinition id="def_checkDue" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="task_checkReleases" name="Check GitHub releases" />
+    <bpmn:exclusiveGateway id="gw_updateAvailable" name="Update available?" />
+    <bpmn:serviceTask id="task_showPopup" name="Show update pop-up" />
+    <bpmn:exclusiveGateway id="gw_downloadChosen" name="Download and Restart chosen?" />
+    <bpmn:callActivity id="sub_applyUpdate" name="Apply update" calledElement="proc_applyUpdate" />
+    <bpmn:endEvent id="evt_updateInstalled" name="Update installed" />
+    <bpmn:exclusiveGateway id="gw_ignoreChosen" name="Ignore for six hours chosen?" />
+    <bpmn:endEvent id="evt_updateSnoozed" name="Update ignored for six hours" />
+    <bpmn:endEvent id="evt_popupHidden" name="Pop-up hidden until next check" />
+    <bpmn:endEvent id="evt_noUpdateFound" name="No update found" />
+    <bpmn:sequenceFlow id="flow_checkDue_to_checkReleases" sourceRef="evt_checkDue" targetRef="task_checkReleases" />
+    <bpmn:sequenceFlow id="flow_checkReleases_to_updateAvailable" sourceRef="task_checkReleases" targetRef="gw_updateAvailable" />
+    <bpmn:sequenceFlow id="flow_updateAvailable_to_noUpdateFound" name="No" sourceRef="gw_updateAvailable" targetRef="evt_noUpdateFound" />
+    <bpmn:sequenceFlow id="flow_updateAvailable_to_showPopup" name="Yes" sourceRef="gw_updateAvailable" targetRef="task_showPopup" />
+    <bpmn:sequenceFlow id="flow_showPopup_to_downloadChosen" sourceRef="task_showPopup" targetRef="gw_downloadChosen" />
+    <bpmn:sequenceFlow id="flow_downloadChosen_to_applyUpdate" name="Yes" sourceRef="gw_downloadChosen" targetRef="sub_applyUpdate" />
+    <bpmn:sequenceFlow id="flow_downloadChosen_to_ignoreChosen" name="No" sourceRef="gw_downloadChosen" targetRef="gw_ignoreChosen" />
+    <bpmn:sequenceFlow id="flow_applyUpdate_to_updateInstalled" sourceRef="sub_applyUpdate" targetRef="evt_updateInstalled" />
+    <bpmn:sequenceFlow id="flow_ignoreChosen_to_updateSnoozed" name="Yes" sourceRef="gw_ignoreChosen" targetRef="evt_updateSnoozed" />
+    <bpmn:sequenceFlow id="flow_ignoreChosen_to_popupHidden" name="No, X" sourceRef="gw_ignoreChosen" targetRef="evt_popupHidden" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram_collab_updateFlow">
+    <bpmndi:BPMNPlane id="plane_collab_updateFlow" bpmnElement="collab_updateFlow">
+      <bpmndi:BPMNShape id="pool_app_di" bpmnElement="pool_app" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="862" height="486" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_checkDue_di" bpmnElement="evt_checkDue">
+        <dc:Bounds x="80" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="48" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_checkReleases_di" bpmnElement="task_checkReleases">
+        <dc:Bounds x="166" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_updateAvailable_di" bpmnElement="gw_updateAvailable">
+        <dc:Bounds x="316" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="291" y="32" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_showPopup_di" bpmnElement="task_showPopup">
+        <dc:Bounds x="416" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_noUpdateFound_di" bpmnElement="evt_noUpdateFound">
+        <dc:Bounds x="448" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="416" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_downloadChosen_di" bpmnElement="gw_downloadChosen">
+        <dc:Bounds x="566" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="541" y="172" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_applyUpdate_di" bpmnElement="sub_applyUpdate">
+        <dc:Bounds x="666" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_ignoreChosen_di" bpmnElement="gw_ignoreChosen">
+        <dc:Bounds x="691" y="330" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="612" y="297" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_updateInstalled_di" bpmnElement="evt_updateInstalled">
+        <dc:Bounds x="816" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="784" y="251" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_updateSnoozed_di" bpmnElement="evt_updateSnoozed">
+        <dc:Bounds x="816" y="337" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="784" y="376" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_popupHidden_di" bpmnElement="evt_popupHidden">
+        <dc:Bounds x="816" y="440" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="784" y="479" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_user_di" bpmnElement="pool_user" isHorizontal="true">
+        <dc:Bounds x="20" y="616" width="862" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_checkDue_to_checkReleases_di" bpmnElement="flow_checkDue_to_checkReleases">
+        <di:waypoint x="116" y="90" />
+        <di:waypoint x="166" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_checkReleases_to_updateAvailable_di" bpmnElement="flow_checkReleases_to_updateAvailable">
+        <di:waypoint x="266" y="90" />
+        <di:waypoint x="316" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_updateAvailable_to_noUpdateFound_di" bpmnElement="flow_updateAvailable_to_noUpdateFound">
+        <di:waypoint x="366" y="90" />
+        <di:waypoint x="448" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="370" y="72" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_updateAvailable_to_showPopup_di" bpmnElement="flow_updateAvailable_to_showPopup">
+        <di:waypoint x="341" y="115" />
+        <di:waypoint x="341" y="230" />
+        <di:waypoint x="416" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="212" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_showPopup_to_downloadChosen_di" bpmnElement="flow_showPopup_to_downloadChosen">
+        <di:waypoint x="516" y="230" />
+        <di:waypoint x="566" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_downloadChosen_to_applyUpdate_di" bpmnElement="flow_downloadChosen_to_applyUpdate">
+        <di:waypoint x="616" y="230" />
+        <di:waypoint x="666" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="212" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_downloadChosen_to_ignoreChosen_di" bpmnElement="flow_downloadChosen_to_ignoreChosen">
+        <di:waypoint x="591" y="255" />
+        <di:waypoint x="591" y="355" />
+        <di:waypoint x="691" y="355" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="597" y="337" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_applyUpdate_to_updateInstalled_di" bpmnElement="flow_applyUpdate_to_updateInstalled">
+        <di:waypoint x="766" y="230" />
+        <di:waypoint x="816" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_ignoreChosen_to_updateSnoozed_di" bpmnElement="flow_ignoreChosen_to_updateSnoozed">
+        <di:waypoint x="741" y="355" />
+        <di:waypoint x="816" y="355" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="745" y="337" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_ignoreChosen_to_popupHidden_di" bpmnElement="flow_ignoreChosen_to_popupHidden">
+        <di:waypoint x="716" y="380" />
+        <di:waypoint x="716" y="458" />
+        <di:waypoint x="816" y="458" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="722" y="440" width="39" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_updateOffer_di" bpmnElement="msg_updateOffer">
+        <di:waypoint x="458" y="270" />
+        <di:waypoint x="458" y="616" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="370" y="435" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_popupChoice_di" bpmnElement="msg_popupChoice">
+        <di:waypoint x="474" y="616" />
+        <di:waypoint x="474" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="480" y="435" width="89" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

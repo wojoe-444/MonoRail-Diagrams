@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="defs_remoteRequestAction" name="Remote request action" namespace="https://monorail.invalid/diagrams/remote-access">
+  <inputData id="in_hostAccepted" name="Host accepted">
+    <description>True when the Host header is the machine's tailnet name or loopback.</description>
+    <variable id="var_hostAccepted" name="Host accepted" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_loginAllowed" name="Login allowed">
+    <description>True when the Tailscale-User-Login header is in the allowed logins list.</description>
+    <variable id="var_loginAllowed" name="Login allowed" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_pairingPath" name="Pairing path">
+    <description>True when the request is for the pairing path, the one path that needs no paired device.</description>
+    <variable id="var_pairingPath" name="Pairing path" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_pairedDeviceCookie" name="Paired device cookie">
+    <description>True when the request carries the cookie of a paired device.</description>
+    <variable id="var_pairedDeviceCookie" name="Paired device cookie" typeRef="boolean" />
+  </inputData>
+  <decision id="dec_remoteRequestAction" name="Remote request action">
+    <description>Does the Remote access server serve a request that comes from a phone, or refuse it?</description>
+    <variable id="var_remoteRequestAction" name="Remote request action" typeRef="string" />
+    <informationRequirement id="req_hostAccepted">
+      <requiredInput href="#in_hostAccepted" />
+    </informationRequirement>
+    <informationRequirement id="req_loginAllowed">
+      <requiredInput href="#in_loginAllowed" />
+    </informationRequirement>
+    <informationRequirement id="req_pairingPath">
+      <requiredInput href="#in_pairingPath" />
+    </informationRequirement>
+    <informationRequirement id="req_pairedDeviceCookie">
+      <requiredInput href="#in_pairedDeviceCookie" />
+    </informationRequirement>
+    <decisionTable id="table_remoteRequestAction">
+      <input id="col_hostAccepted" label="Host accepted">
+        <inputExpression id="expr_hostAccepted" typeRef="boolean">
+          <text>Host accepted</text>
+        </inputExpression>
+        <inputValues id="vals_hostAccepted">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_loginAllowed" label="Login allowed">
+        <inputExpression id="expr_loginAllowed" typeRef="boolean">
+          <text>Login allowed</text>
+        </inputExpression>
+        <inputValues id="vals_loginAllowed">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_pairingPath" label="Pairing path">
+        <inputExpression id="expr_pairingPath" typeRef="boolean">
+          <text>Pairing path</text>
+        </inputExpression>
+        <inputValues id="vals_pairingPath">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_pairedDeviceCookie" label="Paired device cookie">
+        <inputExpression id="expr_pairedDeviceCookie" typeRef="boolean">
+          <text>Paired device cookie</text>
+        </inputExpression>
+        <inputValues id="vals_pairedDeviceCookie">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <output id="col_action" label="Action" typeRef="string">
+        <outputValues id="vals_action">
+          <text>"serve","refuse"</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>The Host is neither the tailnet name nor loopback.</description>
+        <inputEntry id="r1_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r1_c2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r1_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>The Tailscale login is not in the allowed logins list.</description>
+        <inputEntry id="r2_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r2_c2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r2_c3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r2_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r2_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>The pairing path is the one path that needs no paired device.</description>
+        <inputEntry id="r3_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r3_c2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r3_c3">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r3_c4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r3_o1">
+          <text>"serve"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_4">
+        <description>Any other path is served to a paired device.</description>
+        <inputEntry id="r4_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r4_c2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r4_c3">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r4_c4">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="r4_o1">
+          <text>"serve"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_5">
+        <description>Any other path without a paired device cookie is refused.</description>
+        <inputEntry id="r5_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r5_c2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r5_c3">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r5_c4">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="r5_o1">
+          <text>"refuse"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="diagram_defs_remoteRequestAction">
+      <dmndi:DMNShape id="in_hostAccepted_di" dmnElementRef="in_hostAccepted">
+        <dc:Bounds height="45" width="125" x="30" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_loginAllowed_di" dmnElementRef="in_loginAllowed">
+        <dc:Bounds height="45" width="125" x="195" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_pairingPath_di" dmnElementRef="in_pairingPath">
+        <dc:Bounds height="45" width="125" x="360" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_pairedDeviceCookie_di" dmnElementRef="in_pairedDeviceCookie">
+        <dc:Bounds height="45" width="125" x="525" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dec_remoteRequestAction_di" dmnElementRef="dec_remoteRequestAction">
+        <dc:Bounds height="80" width="180" x="250" y="30" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="req_hostAccepted_di" dmnElementRef="req_hostAccepted">
+        <di:waypoint x="93" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_loginAllowed_di" dmnElementRef="req_loginAllowed">
+        <di:waypoint x="258" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_pairingPath_di" dmnElementRef="req_pairingPath">
+        <di:waypoint x="423" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_pairedDeviceCookie_di" dmnElementRef="req_pairedDeviceCookie">
+        <di:waypoint x="588" y="220" />
+        <di:waypoint x="340" y="110" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

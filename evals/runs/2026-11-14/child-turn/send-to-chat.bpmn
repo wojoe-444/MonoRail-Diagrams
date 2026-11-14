@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs_sendToChat" targetNamespace="https://monorail.invalid/diagrams/send-to-chat">
+  <bpmn:collaboration id="collab_sendToChat">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_sendToChat" />
+    <bpmn:participant id="pool_coordinator" name="Coordinator turn" />
+    <bpmn:messageFlow id="msg_sendRequest" name="Message for a chat" sourceRef="pool_coordinator" targetRef="evt_sendRequested" />
+    <bpmn:messageFlow id="msg_turnEnded" name="End of turn" sourceRef="pool_coordinator" targetRef="bnd_coordinatorTurnEnded" />
+  </bpmn:collaboration>
+  <bpmn:process id="proc_sendToChat" isExecutable="false">
+    <bpmn:documentation>Purpose: show how the Coordinator's send_to_chat tool hands a message to another chat as a child turn, when it refuses, and when the child turn is stopped. Trigger: the Coordinator calls send_to_chat.</bpmn:documentation>
+    <bpmn:startEvent id="evt_sendRequested" name="Send requested">
+      <bpmn:messageEventDefinition id="def_sendRequested" />
+    </bpmn:startEvent>
+    <bpmn:businessRuleTask id="task_checkTargetChat" name="Check target chat" implementation="send-action.dmn#dec_sendAction" />
+    <bpmn:exclusiveGateway id="gw_sendAction" name="Send action?" />
+    <bpmn:serviceTask id="task_runChildTurn" name="Run child turn">
+      <bpmn:documentation>Runs through Chat's normal start-turn checks: allowed folders, Ask or Agent mode.</bpmn:documentation>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="bnd_coordinatorTurnEnded" name="Coordinator turn ended" attachedToRef="task_runChildTurn">
+      <bpmn:messageEventDefinition id="def_coordinatorTurnEnded" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="task_stopChildTurn" name="Stop child turn" />
+    <bpmn:endEvent id="evt_childTurnFinished" name="Child turn finished" />
+    <bpmn:endEvent id="evt_sendRefused" name="Send refused" />
+    <bpmn:endEvent id="evt_childTurnStopped" name="Child turn stopped" />
+    <bpmn:sequenceFlow id="flow_sendRequested_to_checkTargetChat" sourceRef="evt_sendRequested" targetRef="task_checkTargetChat" />
+    <bpmn:sequenceFlow id="flow_checkTargetChat_to_sendAction" sourceRef="task_checkTargetChat" targetRef="gw_sendAction" />
+    <bpmn:sequenceFlow id="flow_sendAction_to_runChildTurn" name="allow" sourceRef="gw_sendAction" targetRef="task_runChildTurn" />
+    <bpmn:sequenceFlow id="flow_sendAction_to_sendRefused" name="refuse" sourceRef="gw_sendAction" targetRef="evt_sendRefused" />
+    <bpmn:sequenceFlow id="flow_runChildTurn_to_childTurnFinished" sourceRef="task_runChildTurn" targetRef="evt_childTurnFinished" />
+    <bpmn:sequenceFlow id="flow_coordinatorTurnEnded_to_stopChildTurn" sourceRef="bnd_coordinatorTurnEnded" targetRef="task_stopChildTurn" />
+    <bpmn:sequenceFlow id="flow_stopChildTurn_to_childTurnStopped" sourceRef="task_stopChildTurn" targetRef="evt_childTurnStopped" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram_collab_sendToChat">
+    <bpmndi:BPMNPlane id="plane_collab_sendToChat" bpmnElement="collab_sendToChat">
+      <bpmndi:BPMNShape id="pool_app_di" bpmnElement="pool_app" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="762" height="376" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_sendRequested_di" bpmnElement="evt_sendRequested">
+        <dc:Bounds x="80" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="51" y="53" width="95" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_checkTargetChat_di" bpmnElement="task_checkTargetChat">
+        <dc:Bounds x="166" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_sendAction_di" bpmnElement="gw_sendAction">
+        <dc:Bounds x="316" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="46" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_runChildTurn_di" bpmnElement="task_runChildTurn">
+        <dc:Bounds x="416" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_sendRefused_di" bpmnElement="evt_sendRefused">
+        <dc:Bounds x="448" y="330" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="488" y="340" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_stopChildTurn_di" bpmnElement="task_stopChildTurn">
+        <dc:Bounds x="566" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_childTurnFinished_di" bpmnElement="evt_childTurnFinished">
+        <dc:Bounds x="598" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="566" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_childTurnStopped_di" bpmnElement="evt_childTurnStopped">
+        <dc:Bounds x="716" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="251" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bnd_coordinatorTurnEnded_di" bpmnElement="bnd_coordinatorTurnEnded">
+        <dc:Bounds x="448" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="364" y="151" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_coordinator_di" bpmnElement="pool_coordinator" isHorizontal="true">
+        <dc:Bounds x="20" y="506" width="762" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_sendRequested_to_checkTargetChat_di" bpmnElement="flow_sendRequested_to_checkTargetChat">
+        <di:waypoint x="116" y="90" />
+        <di:waypoint x="166" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_checkTargetChat_to_sendAction_di" bpmnElement="flow_checkTargetChat_to_sendAction">
+        <di:waypoint x="266" y="90" />
+        <di:waypoint x="316" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_sendAction_to_runChildTurn_di" bpmnElement="flow_sendAction_to_runChildTurn">
+        <di:waypoint x="366" y="90" />
+        <di:waypoint x="416" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="370" y="72" width="39" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_sendAction_to_sendRefused_di" bpmnElement="flow_sendAction_to_sendRefused">
+        <di:waypoint x="341" y="115" />
+        <di:waypoint x="341" y="348" />
+        <di:waypoint x="448" y="348" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="347" y="330" width="45" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_runChildTurn_to_childTurnFinished_di" bpmnElement="flow_runChildTurn_to_childTurnFinished">
+        <di:waypoint x="516" y="90" />
+        <di:waypoint x="598" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_coordinatorTurnEnded_to_stopChildTurn_di" bpmnElement="flow_coordinatorTurnEnded_to_stopChildTurn">
+        <di:waypoint x="484" y="130" />
+        <di:waypoint x="496" y="130" />
+        <di:waypoint x="496" y="230" />
+        <di:waypoint x="566" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_stopChildTurn_to_childTurnStopped_di" bpmnElement="flow_stopChildTurn_to_childTurnStopped">
+        <di:waypoint x="666" y="230" />
+        <di:waypoint x="716" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_sendRequest_di" bpmnElement="msg_sendRequest">
+        <di:waypoint x="98" y="506" />
+        <di:waypoint x="98" y="108" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="104" y="292" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_turnEnded_di" bpmnElement="msg_turnEnded">
+        <di:waypoint x="466" y="506" />
+        <di:waypoint x="466" y="148" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="472" y="303" width="76" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="defs_backupRequirement" name="Backup requirement" namespace="https://monorail.invalid/diagrams/update-flow">
+  <inputData id="in_backupFolderSet" name="Backup folder set">
+    <description>True when a global backup folder is set and turned on in Settings, Backups.</description>
+    <variable id="var_backupFolderSet" name="Backup folder set" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_backUpBeforeUpdating" name="Back up before updating">
+    <description>The Settings option "Back up before updating"; on by default.</description>
+    <variable id="var_backUpBeforeUpdating" name="Back up before updating" typeRef="boolean" />
+  </inputData>
+  <decision id="dec_backupRequirement" name="Backup requirement">
+    <description>Should MonoRail back up every global item before it runs the installer?</description>
+    <variable id="var_backupRequirement" name="Backup requirement" typeRef="string" />
+    <informationRequirement id="req_backupFolderSet">
+      <requiredInput href="#in_backupFolderSet" />
+    </informationRequirement>
+    <informationRequirement id="req_backUpBeforeUpdating">
+      <requiredInput href="#in_backUpBeforeUpdating" />
+    </informationRequirement>
+    <decisionTable id="table_backupRequirement">
+      <input id="col_backupFolderSet" label="Backup folder set">
+        <inputExpression id="expr_backupFolderSet" typeRef="boolean">
+          <text>Backup folder set</text>
+        </inputExpression>
+        <inputValues id="vals_backupFolderSet">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_backUpBeforeUpdating" label="Back up before updating">
+        <inputExpression id="expr_backUpBeforeUpdating" typeRef="boolean">
+          <text>Back up before updating</text>
+        </inputExpression>
+        <inputValues id="vals_backUpBeforeUpdating">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <output id="col_requirement" label="Backup requirement" typeRef="string">
+        <outputValues id="vals_requirement">
+          <text>"backup","skip"</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>A backup folder is set and the option is on, so every global item is backed up first.</description>
+        <inputEntry id="r1_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r1_c2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="r1_o1">
+          <text>"backup"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>The option is off, so no backup is made.</description>
+        <inputEntry id="r2_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r2_c2">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="r2_o1">
+          <text>"skip"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>With no backup folder the update is never held up, whatever the option says.</description>
+        <inputEntry id="r3_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r3_c2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r3_o1">
+          <text>"skip"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="diagram_defs_backupRequirement">
+      <dmndi:DMNShape id="in_backupFolderSet_di" dmnElementRef="in_backupFolderSet">
+        <dc:Bounds height="45" width="125" x="30" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_backUpBeforeUpdating_di" dmnElementRef="in_backUpBeforeUpdating">
+        <dc:Bounds height="45" width="125" x="195" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dec_backupRequirement_di" dmnElementRef="dec_backupRequirement">
+        <dc:Bounds height="80" width="180" x="85" y="30" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="req_backupFolderSet_di" dmnElementRef="req_backupFolderSet">
+        <di:waypoint x="93" y="220" />
+        <di:waypoint x="175" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_backUpBeforeUpdating_di" dmnElementRef="req_backUpBeforeUpdating">
+        <di:waypoint x="258" y="220" />
+        <di:waypoint x="175" y="110" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

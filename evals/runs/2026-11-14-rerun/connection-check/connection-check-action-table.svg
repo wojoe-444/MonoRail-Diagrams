@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1562.8000000000002" height="298" viewBox="0 0 1562.8000000000002 298" font-family="Arial, sans-serif" font-size="13">
+<rect width="1562.8000000000002" height="298" fill="#ffffff"/>
+<text x="24" y="30" font-size="18" font-weight="bold" fill="#111111">Connection check action</text>
+<rect x="24" y="44" width="50.2" height="30" fill="#e9e9e9" stroke="#111111" stroke-width="1.2"/><text x="49.1" y="64" text-anchor="middle" font-weight="bold" fill="#111111">U</text>
+<rect x="74.2" y="44" width="713" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1.2"/><text x="430.7" y="64" text-anchor="middle" font-weight="bold" fill="#111111">Inputs</text>
+<rect x="787.2" y="44" width="79.80000000000001" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1.2"/><text x="827.1" y="64" text-anchor="middle" font-weight="bold" fill="#111111">Outputs</text>
+<rect x="867" y="44" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1.2"/><text x="1202.9" y="64" text-anchor="middle" font-weight="bold" fill="#111111"></text>
+<rect x="24" y="74" width="50.2" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="49.1" y="94" text-anchor="middle" font-weight="bold"  fill="#111111">#</text>
+<rect x="74.2" y="74" width="146.4" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="84.2" y="94"  font-weight="bold"  fill="#111111">Connection added</text>
+<rect x="220.60000000000002" y="74" width="390.6" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="94"  font-weight="bold"  fill="#111111">Trigger</text>
+<rect x="611.2" y="74" width="176" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="621.2" y="94"  font-weight="bold"  fill="#111111">Sign-in started here</text>
+<rect x="787.2" y="74" width="79.80000000000001" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="797.2" y="94"  font-weight="bold"  fill="#111111">Action</text>
+<rect x="867" y="74" width="671.8000000000001" height="30" fill="#f3f3f3" stroke="#111111" stroke-width="1"/><text x="877" y="94"  font-weight="bold"  fill="#111111">Annotation</text>
+<rect x="24" y="104" width="50.2" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="49.1" y="124" text-anchor="middle"   fill="#111111">1</text>
+<rect x="74.2" y="104" width="146.4" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="84.2" y="124"   font-family="Consolas, monospace" fill="#111111">false</text>
+<rect x="220.60000000000002" y="104" width="390.6" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="124"   font-family="Consolas, monospace" fill="#111111">-</text>
+<rect x="611.2" y="104" width="176" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="621.2" y="124"   font-family="Consolas, monospace" fill="#111111">-</text>
+<rect x="787.2" y="104" width="79.80000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="797.2" y="124"   font-family="Consolas, monospace" fill="#111111">"skip"</text>
+<rect x="867" y="104" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="877" y="124"    fill="#111111">A connection that is not added is never checked, and nothing runs for it.</text>
+<rect x="24" y="134" width="50.2" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="49.1" y="154" text-anchor="middle"   fill="#111111">2</text>
+<rect x="74.2" y="134" width="146.4" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="84.2" y="154"   font-family="Consolas, monospace" fill="#111111">true</text>
+<rect x="220.60000000000002" y="134" width="390.6" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="154"   font-family="Consolas, monospace" fill="#111111">"page opened","Check pressed","Check all pressed"</text>
+<rect x="611.2" y="134" width="176" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="621.2" y="154"   font-family="Consolas, monospace" fill="#111111">-</text>
+<rect x="787.2" y="134" width="79.80000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="797.2" y="154"   font-family="Consolas, monospace" fill="#111111">"check"</text>
+<rect x="867" y="134" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="877" y="154"    fill="#111111">An added connection is checked when the page opens, on its own Check, and on Check all.</text>
+<rect x="24" y="164" width="50.2" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="49.1" y="184" text-anchor="middle"   fill="#111111">3</text>
+<rect x="74.2" y="164" width="146.4" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="84.2" y="184"   font-family="Consolas, monospace" fill="#111111">true</text>
+<rect x="220.60000000000002" y="164" width="390.6" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="184"   font-family="Consolas, monospace" fill="#111111">"window focused"</text>
+<rect x="611.2" y="164" width="176" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="621.2" y="184"   font-family="Consolas, monospace" fill="#111111">true</text>
+<rect x="787.2" y="164" width="79.80000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="797.2" y="184"   font-family="Consolas, monospace" fill="#111111">"check"</text>
+<rect x="867" y="164" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="877" y="184"    fill="#111111">Regaining focus checks only after a sign-in was started from the page.</text>
+<rect x="24" y="194" width="50.2" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="49.1" y="214" text-anchor="middle"   fill="#111111">4</text>
+<rect x="74.2" y="194" width="146.4" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="84.2" y="214"   font-family="Consolas, monospace" fill="#111111">true</text>
+<rect x="220.60000000000002" y="194" width="390.6" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="214"   font-family="Consolas, monospace" fill="#111111">"window focused"</text>
+<rect x="611.2" y="194" width="176" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="621.2" y="214"   font-family="Consolas, monospace" fill="#111111">false</text>
+<rect x="787.2" y="194" width="79.80000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="797.2" y="214"   font-family="Consolas, monospace" fill="#111111">"skip"</text>
+<rect x="867" y="194" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="877" y="214"    fill="#111111">Regaining focus without a sign-in started from the page does nothing.</text>
+<rect x="24" y="224" width="50.2" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="49.1" y="244" text-anchor="middle"   fill="#111111">5</text>
+<rect x="74.2" y="224" width="146.4" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="84.2" y="244"   font-family="Consolas, monospace" fill="#111111">true</text>
+<rect x="220.60000000000002" y="224" width="390.6" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="230.60000000000002" y="244"   font-family="Consolas, monospace" fill="#111111">"app started"</text>
+<rect x="611.2" y="224" width="176" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="621.2" y="244"   font-family="Consolas, monospace" fill="#111111">-</text>
+<rect x="787.2" y="224" width="79.80000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="797.2" y="244"   font-family="Consolas, monospace" fill="#111111">"skip"</text>
+<rect x="867" y="224" width="671.8000000000001" height="30" fill="#ffffff" stroke="#111111" stroke-width="1"/><text x="877" y="244"    fill="#111111">There is no check when the app starts.</text>
+<text x="24" y="284" font-size="11" fill="#555555">connection-check-action.dmn</text>
+</svg>

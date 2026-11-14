@@ -36,6 +36,7 @@ Measured in phase 5 (see section 6): a fixed set of real MonoRail processes, age
 | DMN file version | Author DMN **1.3** files | Current spec is 1.6 (1.7 beta), but the tool libraries read 1.3 only. See `docs/versions.md`. Decided 2026-11-14. |
 | Link from BPMN to DMN | A business rule task's `implementation` attribute holds `<file>.dmn#<decisionId>` | BPMN has no standard link to DMN; a relative reference is lintable. Our convention (rule BL-1). |
 | Where an app's diagrams live | The app's own repo, `docs/diagrams/<process>/` | A diagram changes with the code it describes. Proposed 2026-11-14; the owner can change it. |
+| Notation for a lone decision | Deliver the `.dmn` alone (BL-11) | Found by the first agent trial: a trivial wrapper process only repeats the table. |
 | Rule IDs | Every rule has an ID (`BP-`, `DM-`, `NM-`, `LY-`, `BL-`) | Reviews, the linter and agents can cite a rule exactly. |
 
 ## 4. The BPMN vs DMN guidance (the core of the standard)
@@ -105,7 +106,11 @@ Deliverables in `evals/`: about five real MonoRail processes written as plain pr
 Done when: agents given only the pointer snippet produce diagrams that pass the lint and the checklist.
 
 ### Later (not scheduled)
-Adopt in the MonoRail repo: add the pointer to its `CLAUDE.md`, and link it from the in-app wiki.
+- Adopt in the MonoRail repo: add the pointer from `docs/adopting.md` to its `CLAUDE.md`, and decide where its diagrams live given its wiki rules (every `docs/**/*.md` needs an `audience:` tag and an inbound link). Not done: it is a change to a different, public repository and needs the owner's go-ahead.
+- Decide whether BL-6 should require more than two inputs (see the judgement calls in `evals/runs/2026-11-14/README.md`).
+- Lanes and several white-box pools in the layouter, if a real process needs them.
+- Re-run the evals whenever the standard changes materially, and add a case whenever a real request shows a gap.
+- Revisit repository visibility if agents on other machines need it routinely.
 
 ## 7. Status
 
@@ -116,7 +121,7 @@ Adopt in the MonoRail repo: add the pointer to its `CLAUDE.md`, and link it from
 | 2 Examples and explainer | done | 2026-11-14: poem loop, Chat turn and spending limit (the blend) as real files with briefs and renders; `explainer/index.html` generated from them by `tools/build-explainer.mjs` (also published as an artifact for the owner). The hand-drawn SVG draft was removed (it is in git history). |
 | 3 Tooling | done | `tools/`: lint (with decision-table evaluation and blend checks), own layouter, renderer, 20 tests. `bpmn-auto-layout` tested and rejected, see `docs/versions.md` and `tools/README.md`. Found while building: BP-18 added, templates added. |
 | 4 Agent entry point | done | `AGENTS.md`, `skill/SKILL.md` (thin: finds or clones the repo, hands over to AGENTS.md), `docs/adopting.md` with the CLAUDE.md snippet. Adopting it in the MonoRail repo itself is NOT done (see Later). |
-| 5 Prove it | in progress | `evals/`: five cases, scorer. Recorded run: see `evals/runs/`. |
+| 5 Prove it | done, with caveats | `evals/`: five real processes, a scorer, and the first trial (`evals/runs/2026-11-14`): 4 of 5 by today's scorer. The miss exposed a gap in the standard (BL-11, added) and the re-run passes. Caveats: agents were the same model family as the author, one attempt per case; the scorer proves the standard was followed, not that a diagram is right. A person should look at the renders. |
 
 ## 8. Notes for an agent resuming this work
 

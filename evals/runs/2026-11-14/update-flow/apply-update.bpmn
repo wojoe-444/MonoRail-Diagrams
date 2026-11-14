@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs_applyUpdate" targetNamespace="https://monorail.invalid/diagrams/update-flow">
+  <bpmn:collaboration id="collab_applyUpdate">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_applyUpdate" />
+    <bpmn:participant id="pool_github" name="GitHub" />
+    <bpmn:participant id="pool_user" name="User" />
+    <bpmn:messageFlow id="msg_downloadRequest" name="Download request" sourceRef="task_downloadUpdate" targetRef="pool_github" />
+    <bpmn:messageFlow id="msg_installer" name="Installer" sourceRef="pool_github" targetRef="task_downloadUpdate" />
+    <bpmn:messageFlow id="msg_backupFailure" name="Backup failure notice" sourceRef="task_offerRetry" targetRef="pool_user" />
+    <bpmn:messageFlow id="msg_retryChoice" name="Retry choice" sourceRef="pool_user" targetRef="task_offerRetry" />
+  </bpmn:collaboration>
+  <bpmn:process id="proc_applyUpdate" isExecutable="false">
+    <bpmn:documentation>Purpose: show how a chosen update is downloaded, backed up, held when the backup fails, and installed. Trigger: the user clicked Download and Restart in the update pop-up.</bpmn:documentation>
+    <bpmn:startEvent id="evt_downloadChosen" name="Download chosen" />
+    <bpmn:serviceTask id="task_downloadUpdate" name="Download update" />
+    <bpmn:businessRuleTask id="task_checkBackupRequirement" name="Check backup requirement" implementation="backup-requirement.dmn#dec_backupRequirement" />
+    <bpmn:exclusiveGateway id="gw_backupNeeded" name="Backup needed?" />
+    <bpmn:exclusiveGateway id="gw_backupEntry" />
+    <bpmn:serviceTask id="task_backUpGlobalItems" name="Back up global items" />
+    <bpmn:exclusiveGateway id="gw_backupSucceeded" name="Backup succeeded?" />
+    <bpmn:exclusiveGateway id="gw_installEntry" />
+    <bpmn:serviceTask id="task_runInstaller" name="Run installer" />
+    <bpmn:endEvent id="evt_appRestarted" name="App restarted" />
+    <bpmn:serviceTask id="task_offerRetry" name="Offer retry or update without backup" />
+    <bpmn:exclusiveGateway id="gw_tryAgain" name="Try backup again?" />
+    <bpmn:sequenceFlow id="flow_downloadChosen_to_downloadUpdate" sourceRef="evt_downloadChosen" targetRef="task_downloadUpdate" />
+    <bpmn:sequenceFlow id="flow_downloadUpdate_to_checkBackupRequirement" sourceRef="task_downloadUpdate" targetRef="task_checkBackupRequirement" />
+    <bpmn:sequenceFlow id="flow_checkBackupRequirement_to_backupNeeded" sourceRef="task_checkBackupRequirement" targetRef="gw_backupNeeded" />
+    <bpmn:sequenceFlow id="flow_backupNeeded_to_installEntry" name="skip" sourceRef="gw_backupNeeded" targetRef="gw_installEntry" />
+    <bpmn:sequenceFlow id="flow_backupNeeded_to_backupEntry" name="backup" sourceRef="gw_backupNeeded" targetRef="gw_backupEntry" />
+    <bpmn:sequenceFlow id="flow_backupEntry_to_backUpGlobalItems" sourceRef="gw_backupEntry" targetRef="task_backUpGlobalItems" />
+    <bpmn:sequenceFlow id="flow_backUpGlobalItems_to_backupSucceeded" sourceRef="task_backUpGlobalItems" targetRef="gw_backupSucceeded" />
+    <bpmn:sequenceFlow id="flow_backupSucceeded_to_installEntry" name="Yes" sourceRef="gw_backupSucceeded" targetRef="gw_installEntry" />
+    <bpmn:sequenceFlow id="flow_backupSucceeded_to_offerRetry" name="No" sourceRef="gw_backupSucceeded" targetRef="task_offerRetry" />
+    <bpmn:sequenceFlow id="flow_offerRetry_to_tryAgain" sourceRef="task_offerRetry" targetRef="gw_tryAgain" />
+    <bpmn:sequenceFlow id="flow_tryAgain_to_installEntry" name="No" sourceRef="gw_tryAgain" targetRef="gw_installEntry" />
+    <bpmn:sequenceFlow id="flow_tryAgain_to_backupEntry" name="Yes" sourceRef="gw_tryAgain" targetRef="gw_backupEntry" />
+    <bpmn:sequenceFlow id="flow_installEntry_to_runInstaller" sourceRef="gw_installEntry" targetRef="task_runInstaller" />
+    <bpmn:sequenceFlow id="flow_runInstaller_to_appRestarted" sourceRef="task_runInstaller" targetRef="evt_appRestarted" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram_collab_applyUpdate">
+    <bpmndi:BPMNPlane id="plane_collab_applyUpdate" bpmnElement="collab_applyUpdate">
+      <bpmndi:BPMNShape id="pool_app_di" bpmnElement="pool_app" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="1462" height="460" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_downloadChosen_di" bpmnElement="evt_downloadChosen">
+        <dc:Bounds x="80" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="48" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_downloadUpdate_di" bpmnElement="task_downloadUpdate">
+        <dc:Bounds x="166" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_checkBackupRequirement_di" bpmnElement="task_checkBackupRequirement">
+        <dc:Bounds x="316" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_backupNeeded_di" bpmnElement="gw_backupNeeded">
+        <dc:Bounds x="466" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="444" y="46" width="95" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_backupEntry_di" bpmnElement="gw_backupEntry">
+        <dc:Bounds x="566" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_backUpGlobalItems_di" bpmnElement="task_backUpGlobalItems">
+        <dc:Bounds x="666" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_backupSucceeded_di" bpmnElement="gw_backupSucceeded">
+        <dc:Bounds x="816" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="791" y="172" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_offerRetry_di" bpmnElement="task_offerRetry">
+        <dc:Bounds x="916" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_tryAgain_di" bpmnElement="gw_tryAgain">
+        <dc:Bounds x="1066" y="345" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1041" y="312" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_installEntry_di" bpmnElement="gw_installEntry">
+        <dc:Bounds x="1166" y="65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_runInstaller_di" bpmnElement="task_runInstaller">
+        <dc:Bounds x="1266" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_appRestarted_di" bpmnElement="evt_appRestarted">
+        <dc:Bounds x="1416" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1390" y="111" width="89" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_github_di" bpmnElement="pool_github" isHorizontal="true">
+        <dc:Bounds x="20" y="590" width="1462" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_user_di" bpmnElement="pool_user" isHorizontal="true">
+        <dc:Bounds x="20" y="680" width="1462" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_downloadChosen_to_downloadUpdate_di" bpmnElement="flow_downloadChosen_to_downloadUpdate">
+        <di:waypoint x="116" y="90" />
+        <di:waypoint x="166" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_downloadUpdate_to_checkBackupRequirement_di" bpmnElement="flow_downloadUpdate_to_checkBackupRequirement">
+        <di:waypoint x="266" y="90" />
+        <di:waypoint x="316" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_checkBackupRequirement_to_backupNeeded_di" bpmnElement="flow_checkBackupRequirement_to_backupNeeded">
+        <di:waypoint x="416" y="90" />
+        <di:waypoint x="466" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupNeeded_to_installEntry_di" bpmnElement="flow_backupNeeded_to_installEntry">
+        <di:waypoint x="516" y="90" />
+        <di:waypoint x="1166" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="520" y="72" width="33" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupNeeded_to_backupEntry_di" bpmnElement="flow_backupNeeded_to_backupEntry">
+        <di:waypoint x="491" y="115" />
+        <di:waypoint x="491" y="230" />
+        <di:waypoint x="566" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="497" y="212" width="45" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupEntry_to_backUpGlobalItems_di" bpmnElement="flow_backupEntry_to_backUpGlobalItems">
+        <di:waypoint x="616" y="230" />
+        <di:waypoint x="666" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backUpGlobalItems_to_backupSucceeded_di" bpmnElement="flow_backUpGlobalItems_to_backupSucceeded">
+        <di:waypoint x="766" y="230" />
+        <di:waypoint x="816" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupSucceeded_to_installEntry_di" bpmnElement="flow_backupSucceeded_to_installEntry">
+        <di:waypoint x="866" y="230" />
+        <di:waypoint x="1191" y="230" />
+        <di:waypoint x="1191" y="115" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="870" y="212" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupSucceeded_to_offerRetry_di" bpmnElement="flow_backupSucceeded_to_offerRetry">
+        <di:waypoint x="841" y="255" />
+        <di:waypoint x="841" y="370" />
+        <di:waypoint x="916" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="847" y="352" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_offerRetry_to_tryAgain_di" bpmnElement="flow_offerRetry_to_tryAgain">
+        <di:waypoint x="1016" y="370" />
+        <di:waypoint x="1066" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_tryAgain_to_installEntry_di" bpmnElement="flow_tryAgain_to_installEntry">
+        <di:waypoint x="1116" y="370" />
+        <di:waypoint x="1191" y="370" />
+        <di:waypoint x="1191" y="115" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1120" y="352" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_tryAgain_to_backupEntry_di" bpmnElement="flow_tryAgain_to_backupEntry">
+        <di:waypoint x="1091" y="395" />
+        <di:waypoint x="1091" y="434" />
+        <di:waypoint x="591" y="434" />
+        <di:waypoint x="591" y="255" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="597" y="416" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_installEntry_to_runInstaller_di" bpmnElement="flow_installEntry_to_runInstaller">
+        <di:waypoint x="1216" y="90" />
+        <di:waypoint x="1266" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_runInstaller_to_appRestarted_di" bpmnElement="flow_runInstaller_to_appRestarted">
+        <di:waypoint x="1366" y="90" />
+        <di:waypoint x="1416" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_downloadRequest_di" bpmnElement="msg_downloadRequest">
+        <di:waypoint x="208" y="130" />
+        <di:waypoint x="208" y="590" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="102" y="345" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_installer_di" bpmnElement="msg_installer">
+        <di:waypoint x="224" y="590" />
+        <di:waypoint x="224" y="130" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="230" y="352" width="64" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_backupFailure_di" bpmnElement="msg_backupFailure">
+        <di:waypoint x="958" y="410" />
+        <di:waypoint x="958" y="680" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="852" y="530" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="msg_retryChoice_di" bpmnElement="msg_retryChoice">
+        <di:waypoint x="974" y="680" />
+        <di:waypoint x="974" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="980" y="537" width="82" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

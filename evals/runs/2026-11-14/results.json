@@ -1,0 +1,157 @@
+[
+  {
+    "id": "backup-schedule",
+    "pass": true,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected bpmn; found 1 .bpmn, 0 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": true,
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "child-turn",
+    "pass": true,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected both; found 1 .bpmn, 1 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": true,
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "connection-check",
+    "pass": false,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected dmn; found 1 .bpmn, 1 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": false,
+        "note": "a process was added around a lone decision (BL-11)"
+      }
+    ]
+  },
+  {
+    "id": "remote-access",
+    "pass": true,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected dmn; found 0 .bpmn, 1 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": true,
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "update-flow",
+    "pass": true,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected bpmn; found 2 .bpmn, 1 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": true,
+        "note": ""
+      }
+    ]
+  }
+]

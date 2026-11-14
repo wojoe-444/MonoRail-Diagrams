@@ -1,0 +1,33 @@
+[
+  {
+    "id": "connection-check",
+    "pass": true,
+    "checks": [
+      {
+        "name": "files",
+        "ok": true,
+        "note": "expected dmn; found 0 .bpmn, 1 .dmn"
+      },
+      {
+        "name": "built",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "brief",
+        "ok": true,
+        "note": ""
+      },
+      {
+        "name": "lint",
+        "ok": true,
+        "note": "0 error(s), 0 warning(s)"
+      },
+      {
+        "name": "expect",
+        "ok": true,
+        "note": ""
+      }
+    ]
+  }
+]

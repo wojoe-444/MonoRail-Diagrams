@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs_backupSchedule" targetNamespace="https://monorail.invalid/diagrams/backup-schedule">
+  <bpmn:collaboration id="collab_backupSchedule">
+    <bpmn:participant id="pool_app" name="MonoRail app" processRef="proc_backupSchedule" />
+  </bpmn:collaboration>
+  <bpmn:process id="proc_backupSchedule" isExecutable="false">
+    <bpmn:documentation>Purpose: show how one scheduler check turns into a global backup that is written, verified, completed and pruned, and how a failed backup is retried. Trigger: the scheduler's check, which runs once when the app starts and then every minute while it runs; a backup missed while the app was closed counts as due and runs once at the startup check.</bpmn:documentation>
+    <bpmn:startEvent id="evt_scheduleCheckStarted" name="Schedule check started" />
+    <bpmn:exclusiveGateway id="gw_checkStart" />
+    <bpmn:serviceTask id="task_checkSchedule" name="Check backup schedule" />
+    <bpmn:exclusiveGateway id="gw_backupDue" name="Backup due or missed?" />
+    <bpmn:serviceTask id="task_writePartialFile" name="Write .partial file" />
+    <bpmn:serviceTask id="task_verifyBackup" name="Verify backup" />
+    <bpmn:exclusiveGateway id="gw_backupVerified" name="Backup verified?" />
+    <bpmn:serviceTask id="task_renamePartialFile" name="Rename .partial file" />
+    <bpmn:serviceTask id="task_removeOlderBackups" name="Remove older backups" />
+    <bpmn:intermediateCatchEvent id="evt_retryDelayPassed" name="15 min passed">
+      <bpmn:timerEventDefinition id="def_retryDelay" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="evt_backupCompleted" name="Backup completed" />
+    <bpmn:endEvent id="evt_nothingDue" name="No backup needed" />
+    <bpmn:sequenceFlow id="flow_scheduleCheckStarted_to_checkStart" sourceRef="evt_scheduleCheckStarted" targetRef="gw_checkStart" />
+    <bpmn:sequenceFlow id="flow_checkStart_to_checkSchedule" sourceRef="gw_checkStart" targetRef="task_checkSchedule" />
+    <bpmn:sequenceFlow id="flow_checkSchedule_to_backupDue" sourceRef="task_checkSchedule" targetRef="gw_backupDue" />
+    <bpmn:sequenceFlow id="flow_backupDue_to_writePartialFile" name="Yes" sourceRef="gw_backupDue" targetRef="task_writePartialFile" />
+    <bpmn:sequenceFlow id="flow_backupDue_to_nothingDue" name="No" sourceRef="gw_backupDue" targetRef="evt_nothingDue" />
+    <bpmn:sequenceFlow id="flow_writePartialFile_to_verifyBackup" sourceRef="task_writePartialFile" targetRef="task_verifyBackup" />
+    <bpmn:sequenceFlow id="flow_verifyBackup_to_backupVerified" sourceRef="task_verifyBackup" targetRef="gw_backupVerified" />
+    <bpmn:sequenceFlow id="flow_backupVerified_to_renamePartialFile" name="Yes" sourceRef="gw_backupVerified" targetRef="task_renamePartialFile" />
+    <bpmn:sequenceFlow id="flow_backupVerified_to_retryDelayPassed" name="No" sourceRef="gw_backupVerified" targetRef="evt_retryDelayPassed" />
+    <bpmn:sequenceFlow id="flow_renamePartialFile_to_removeOlderBackups" sourceRef="task_renamePartialFile" targetRef="task_removeOlderBackups" />
+    <bpmn:sequenceFlow id="flow_removeOlderBackups_to_backupCompleted" sourceRef="task_removeOlderBackups" targetRef="evt_backupCompleted" />
+    <bpmn:sequenceFlow id="flow_retryDelayPassed_to_checkStart" sourceRef="evt_retryDelayPassed" targetRef="gw_checkStart" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram_collab_backupSchedule">
+    <bpmndi:BPMNPlane id="plane_collab_backupSchedule" bpmnElement="collab_backupSchedule">
+      <bpmndi:BPMNShape id="pool_app_di" bpmnElement="pool_app" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="1262" height="372" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_scheduleCheckStarted_di" bpmnElement="evt_scheduleCheckStarted">
+        <dc:Bounds x="80" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="48" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_checkStart_di" bpmnElement="gw_checkStart">
+        <dc:Bounds x="166" y="65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_checkSchedule_di" bpmnElement="task_checkSchedule">
+        <dc:Bounds x="266" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_backupDue_di" bpmnElement="gw_backupDue">
+        <dc:Bounds x="416" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="391" y="32" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_writePartialFile_di" bpmnElement="task_writePartialFile">
+        <dc:Bounds x="516" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_nothingDue_di" bpmnElement="evt_nothingDue">
+        <dc:Bounds x="548" y="190" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="516" y="229" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_verifyBackup_di" bpmnElement="task_verifyBackup">
+        <dc:Bounds x="666" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_backupVerified_di" bpmnElement="gw_backupVerified">
+        <dc:Bounds x="816" y="65" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="791" y="32" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_renamePartialFile_di" bpmnElement="task_renamePartialFile">
+        <dc:Bounds x="916" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_retryDelayPassed_di" bpmnElement="evt_retryDelayPassed">
+        <dc:Bounds x="948" y="286" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="922" y="267" width="89" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_removeOlderBackups_di" bpmnElement="task_removeOlderBackups">
+        <dc:Bounds x="1066" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_backupCompleted_di" bpmnElement="evt_backupCompleted">
+        <dc:Bounds x="1216" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1184" y="111" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_scheduleCheckStarted_to_checkStart_di" bpmnElement="flow_scheduleCheckStarted_to_checkStart">
+        <di:waypoint x="116" y="90" />
+        <di:waypoint x="166" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_checkStart_to_checkSchedule_di" bpmnElement="flow_checkStart_to_checkSchedule">
+        <di:waypoint x="216" y="90" />
+        <di:waypoint x="266" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_checkSchedule_to_backupDue_di" bpmnElement="flow_checkSchedule_to_backupDue">
+        <di:waypoint x="366" y="90" />
+        <di:waypoint x="416" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupDue_to_writePartialFile_di" bpmnElement="flow_backupDue_to_writePartialFile">
+        <di:waypoint x="466" y="90" />
+        <di:waypoint x="516" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="470" y="72" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupDue_to_nothingDue_di" bpmnElement="flow_backupDue_to_nothingDue">
+        <di:waypoint x="441" y="115" />
+        <di:waypoint x="441" y="208" />
+        <di:waypoint x="548" y="208" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="447" y="190" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_writePartialFile_to_verifyBackup_di" bpmnElement="flow_writePartialFile_to_verifyBackup">
+        <di:waypoint x="616" y="90" />
+        <di:waypoint x="666" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_verifyBackup_to_backupVerified_di" bpmnElement="flow_verifyBackup_to_backupVerified">
+        <di:waypoint x="766" y="90" />
+        <di:waypoint x="816" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupVerified_to_renamePartialFile_di" bpmnElement="flow_backupVerified_to_renamePartialFile">
+        <di:waypoint x="866" y="90" />
+        <di:waypoint x="916" y="90" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="870" y="72" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_backupVerified_to_retryDelayPassed_di" bpmnElement="flow_backupVerified_to_retryDelayPassed">
+        <di:waypoint x="841" y="115" />
+        <di:waypoint x="841" y="304" />
+        <di:waypoint x="948" y="304" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="847" y="286" width="30" height="16" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_renamePartialFile_to_removeOlderBackups_di" bpmnElement="flow_renamePartialFile_to_removeOlderBackups">
+        <di:waypoint x="1016" y="90" />
+        <di:waypoint x="1066" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_removeOlderBackups_to_backupCompleted_di" bpmnElement="flow_removeOlderBackups_to_backupCompleted">
+        <di:waypoint x="1166" y="90" />
+        <di:waypoint x="1216" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_retryDelayPassed_to_checkStart_di" bpmnElement="flow_retryDelayPassed_to_checkStart">
+        <di:waypoint x="966" y="322" />
+        <di:waypoint x="966" y="346" />
+        <di:waypoint x="191" y="346" />
+        <di:waypoint x="191" y="115" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

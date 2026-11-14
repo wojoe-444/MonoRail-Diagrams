@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="defs_connectionCheckAction" name="Connection check action" namespace="https://monorail.invalid/diagrams/connection-check">
+  <inputData id="in_connectionAdded" name="Connection added">
+    <description>True once the user has set the connection up on the Connections page.</description>
+    <variable id="var_connectionAdded" name="Connection added" typeRef="boolean" />
+  </inputData>
+  <inputData id="in_trigger" name="Trigger">
+    <description>What just happened on the Connections page or in the app.</description>
+    <variable id="var_trigger" name="Trigger" typeRef="string" />
+  </inputData>
+  <inputData id="in_signInStartedHere" name="Sign-in started here">
+    <description>True when a sign-in was started from the Connections page.</description>
+    <variable id="var_signInStartedHere" name="Sign-in started here" typeRef="boolean" />
+  </inputData>
+  <decision id="dec_connectionCheckAction" name="Connection check action">
+    <description>Is this connection checked now, or left alone?</description>
+    <variable id="var_connectionCheckAction" name="Connection check action" typeRef="string" />
+    <informationRequirement id="req_connectionAdded">
+      <requiredInput href="#in_connectionAdded" />
+    </informationRequirement>
+    <informationRequirement id="req_trigger">
+      <requiredInput href="#in_trigger" />
+    </informationRequirement>
+    <informationRequirement id="req_signInStartedHere">
+      <requiredInput href="#in_signInStartedHere" />
+    </informationRequirement>
+    <decisionTable id="table_connectionCheckAction">
+      <input id="col_connectionAdded" label="Connection added">
+        <inputExpression id="expr_connectionAdded" typeRef="boolean">
+          <text>Connection added</text>
+        </inputExpression>
+        <inputValues id="vals_connectionAdded">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <input id="col_trigger" label="Trigger">
+        <inputExpression id="expr_trigger" typeRef="string">
+          <text>Trigger</text>
+        </inputExpression>
+        <inputValues id="vals_trigger">
+          <text>"page opened","Check pressed","Check all pressed","window focused","app started"</text>
+        </inputValues>
+      </input>
+      <input id="col_signInStartedHere" label="Sign-in started here">
+        <inputExpression id="expr_signInStartedHere" typeRef="boolean">
+          <text>Sign-in started here</text>
+        </inputExpression>
+        <inputValues id="vals_signInStartedHere">
+          <text>true,false</text>
+        </inputValues>
+      </input>
+      <output id="col_action" label="Action" typeRef="string">
+        <outputValues id="vals_action">
+          <text>"check","skip"</text>
+        </outputValues>
+      </output>
+      <rule id="rule_1">
+        <description>A connection that is not added is never checked, and nothing runs for it.</description>
+        <inputEntry id="r1_c1">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="r1_c2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="r1_c3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r1_o1">
+          <text>"skip"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_2">
+        <description>An added connection is checked when the page opens, on its own Check, and on Check all.</description>
+        <inputEntry id="r2_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r2_c2">
+          <text>"page opened","Check pressed","Check all pressed"</text>
+        </inputEntry>
+        <inputEntry id="r2_c3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r2_o1">
+          <text>"check"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_3">
+        <description>Regaining focus checks only after a sign-in was started from the page.</description>
+        <inputEntry id="r3_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r3_c2">
+          <text>"window focused"</text>
+        </inputEntry>
+        <inputEntry id="r3_c3">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="r3_o1">
+          <text>"check"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_4">
+        <description>Regaining focus without a sign-in started from the page does nothing.</description>
+        <inputEntry id="r4_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r4_c2">
+          <text>"window focused"</text>
+        </inputEntry>
+        <inputEntry id="r4_c3">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="r4_o1">
+          <text>"skip"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule_5">
+        <description>There is no check when the app starts.</description>
+        <inputEntry id="r5_c1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="r5_c2">
+          <text>"app started"</text>
+        </inputEntry>
+        <inputEntry id="r5_c3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="r5_o1">
+          <text>"skip"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="diagram_defs_connectionCheckAction">
+      <dmndi:DMNShape id="in_connectionAdded_di" dmnElementRef="in_connectionAdded">
+        <dc:Bounds height="45" width="125" x="30" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_trigger_di" dmnElementRef="in_trigger">
+        <dc:Bounds height="45" width="125" x="195" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="in_signInStartedHere_di" dmnElementRef="in_signInStartedHere">
+        <dc:Bounds height="45" width="125" x="360" y="220" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dec_connectionCheckAction_di" dmnElementRef="dec_connectionCheckAction">
+        <dc:Bounds height="80" width="180" x="168" y="30" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="req_connectionAdded_di" dmnElementRef="req_connectionAdded">
+        <di:waypoint x="93" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_trigger_di" dmnElementRef="req_trigger">
+        <di:waypoint x="258" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="req_signInStartedHere_di" dmnElementRef="req_signInStartedHere">
+        <di:waypoint x="423" y="220" />
+        <di:waypoint x="258" y="110" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
