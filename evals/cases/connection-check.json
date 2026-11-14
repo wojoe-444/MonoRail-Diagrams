@@ -1,0 +1,5 @@
+{
+  "id": "connection-check",
+  "request": "Draw when the Connections page checks a connection. A connection that has not been added is never checked, and nothing runs for it. For an added connection, the page checks it when the page opens, when the user presses Check on that connection, and when the user presses Check all. When the window regains focus it checks only if a sign-in was started from that page. There is no check when the app starts.",
+  "expect": { "notation": "dmn", "minRules": 2 }
+}

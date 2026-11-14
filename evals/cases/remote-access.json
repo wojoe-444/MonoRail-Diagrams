@@ -1,0 +1,5 @@
+{
+  "id": "remote-access",
+  "request": "Draw how MonoRail's Remote access server decides whether to serve a request that comes from a phone. The server only listens on 127.0.0.1. A request is served only when all of these hold: the Host header is the machine's tailnet name or loopback; the Tailscale-User-Login header is in the allowed logins list; and, for every path except the pairing path, the request carries the cookie of a paired device. Otherwise the request is refused.",
+  "expect": { "notation": "dmn", "minRules": 2 }
+}

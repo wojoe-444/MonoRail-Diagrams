@@ -4,7 +4,7 @@ The standard for drawing **process and flow diagrams** in MonoRail apps: **BPMN 
 
 The goal: point an agent here and have it turn a described process into a diagram that matches every other MonoRail diagram, quickly and without guesswork.
 
-> Status: the written standard, the tools and three worked examples are in place. The agent skill and the agent test are still to come. See [PLAN.md](PLAN.md) for the plan and the current state.
+> Status: the written standard, the tools and three worked examples are in place. The agent skill and the test are in place; the recorded run is in `evals/runs/`. See [PLAN.md](PLAN.md) for the plan and the current state.
 
 ## Which notation?
 
@@ -28,6 +28,7 @@ The goal: point an agent here and have it turn a described process into a diagra
 | [symbol-reference.md](docs/symbol-reference.md) | Every allowed shape and what it means |
 | [checklist.md](docs/checklist.md) | The review list |
 | [versions.md](docs/versions.md) | Pinned notation versions and tools |
+| [adopting.md](docs/adopting.md) | How an app points agents here (CLAUDE.md snippet, skill) |
 
 Every rule has an ID (`BP-3`, `NM-4`, `BL-2` and so on) so reviews, tools and agents can cite it.
 
@@ -35,6 +36,8 @@ Every rule has an ID (`BP-3`, `NM-4`, `BL-2` and so on) so reviews, tools and ag
 
 - [examples/](examples/README.md): the poem loop, a Chat turn, and the spending limit (the blend of BPMN and DMN).
 - [explainer/index.html](explainer/index.html): open in a browser. Each example beside its brief, with what to notice. Rebuild with `node tools/build-explainer.mjs`.
+- [evals/](evals/README.md): the agent test, five real processes and a scorer.
+- [skill/](skill/SKILL.md): a Claude Code skill that finds this repository and hands over to `AGENTS.md`.
 - [templates/](templates/process.bpmn): start a new `.bpmn` or `.dmn` from these.
 - [tools/](tools/README.md): `node diagrams.mjs build <folder>` checks the rules, lays the diagram out and writes the SVG.
 
@@ -50,6 +53,8 @@ PLAN.md        the plan and its status
 docs/          the standard
 examples/      worked examples with briefs and renders
 templates/     starting files for a process and a decision
+skill/         the Claude Code skill
+evals/         the agent test
 tools/         check, lay out and render (Node)
 explainer/     the explainer page, built from the examples
 ```

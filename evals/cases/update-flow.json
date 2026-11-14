@@ -1,0 +1,5 @@
+{
+  "id": "update-flow",
+  "request": "Draw how the MonoRail app updates itself. The app checks GitHub releases for a new version 30 seconds after startup and then every 4 hours. When an update is available, a pop-up offers three choices: \"Download and Restart\", \"Ignore for six hours\", or close it with the X (hidden until the next check). If the user picks Download and Restart, the update downloads. If a global backup folder is set and \"Back up before updating\" is on (it is by default), MonoRail then backs up every global item into a before-update folder, after the download and before the installer runs. If that backup fails the update is held, and the user can choose Try again or Update without a backup. With no backup folder set the update is never held up. Then the installer runs and the app restarts.",
+  "expect": { "notation": "bpmn", "eventDefinitions": ["timer"], "minEnds": 2 }
+}

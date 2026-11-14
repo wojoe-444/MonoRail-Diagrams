@@ -1,0 +1,5 @@
+{
+  "id": "child-turn",
+  "request": "Draw how the Coordinator sends a message to another chat (the send_to_chat tool). The Coordinator may not target another Coordinator chat. A chat whose log changed in the last minute is refused. Only one turn per chat can run at a time (a lock file), so a chat that already has a turn running is refused too. Otherwise the message runs as a child turn through Chat's normal start-turn checks (allowed folders, Ask or Agent mode), and the child turn is stopped if the Coordinator's own turn ends.",
+  "expect": { "notation": "both", "blend": true, "minEnds": 2 }
+}

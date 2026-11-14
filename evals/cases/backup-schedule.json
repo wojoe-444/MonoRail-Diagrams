@@ -1,0 +1,5 @@
+{
+  "id": "backup-schedule",
+  "request": "Draw how MonoRail's global backups run. A scheduler inside the app checks every minute and once at startup; a backup missed while the app was closed runs once when the app opens. Each backup is written as a .partial file, verified, and renamed when complete; then older backups are removed so that only the newest N are kept. If a backup fails, it is retried after 15 minutes.",
+  "expect": { "notation": "bpmn", "eventDefinitions": ["timer"], "minEnds": 1 }
+}
