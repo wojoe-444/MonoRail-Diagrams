@@ -4,7 +4,7 @@ The standard for drawing **process and flow diagrams** in MonoRail apps: **BPMN 
 
 The goal: point an agent here and have it turn a described process into a diagram that matches every other MonoRail diagram, quickly and without guesswork.
 
-> Status: the written standard, the tools and three worked examples are in place. The explainer, the agent skill and the agent test are still to come. See [PLAN.md](PLAN.md) for the plan and the current state.
+> Status: the written standard, the tools and three worked examples are in place. The agent skill and the agent test are still to come. See [PLAN.md](PLAN.md) for the plan and the current state.
 
 ## Which notation?
 
@@ -34,6 +34,7 @@ Every rule has an ID (`BP-3`, `NM-4`, `BL-2` and so on) so reviews, tools and ag
 ## Examples and tools
 
 - [examples/](examples/README.md): the poem loop, a Chat turn, and the spending limit (the blend of BPMN and DMN).
+- [explainer/index.html](explainer/index.html): open in a browser. Each example beside its brief, with what to notice. Rebuild with `node tools/build-explainer.mjs`.
 - [templates/](templates/process.bpmn): start a new `.bpmn` or `.dmn` from these.
 - [tools/](tools/README.md): `node diagrams.mjs build <folder>` checks the rules, lays the diagram out and writes the SVG.
 
@@ -50,7 +51,7 @@ docs/          the standard
 examples/      worked examples with briefs and renders
 templates/     starting files for a process and a decision
 tools/         check, lay out and render (Node)
-explainer/     the explainer page (a first draft so far)
+explainer/     the explainer page, built from the examples
 ```
 
 Files are never pictures only: the source of truth is `.bpmn` and `.dmn` XML, and images are renders of it. This repository holds no personal data; examples use MonoRail's own public behaviour or fictional data.

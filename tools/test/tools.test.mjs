@@ -237,3 +237,28 @@ test('FEEL entries: ranges, comparisons, lists, not, any', () => {
   assert.throws(() => parseEntry('foo(1)'));
   assert.deepEqual(numericDomain([50, 100]).includes(75), true);
 });
+
+// ---------------------------------------------------------------- renders
+
+test('every committed render is well-formed XML (a browser tab forgives what GitHub does not)', async () => {
+  const { chromium } = await import('playwright-core');
+  const browser = await chromium.launch({ channel: process.env.DIAGRAMS_BROWSER || 'msedge' });
+  try {
+    const page = await browser.newPage();
+    const svgs = [];
+    (function walk(d) {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) walk(p); else if (p.endsWith('.svg')) svgs.push(p);
+      }
+    })(examples);
+    assert.ok(svgs.length >= 5);
+    for (const f of svgs) {
+      const err = await page.evaluate((src) => {
+        const doc = new DOMParser().parseFromString(src, 'image/svg+xml');
+        return doc.querySelector('parsererror')?.textContent ?? null;
+      }, fs.readFileSync(f, 'utf8'));
+      assert.equal(err, null, `${f}: ${err}`);
+    }
+  } finally { await browser.close(); }
+});

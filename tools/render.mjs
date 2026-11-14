@@ -30,7 +30,8 @@ export function frameSvg(svg, title, source) {
   const bottom = 30;
   const W = vw + 2 * PAD;
   const H = vh + top + bottom + PAD;
-  const inner = svg.replace(/^<\?xml[^>]*>\s*/, '').replace(/<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+  // The viewer's export starts with an XML declaration, a comment and a DOCTYPE; keep only the <svg> body.
+  const inner = svg.slice(svg.indexOf('<svg')).replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`,

@@ -53,7 +53,7 @@ The procedure to follow when someone describes a process or a decision and asks 
 **Out of scope:** the content of the prompts.
 ```
 
-The draft of this diagram is [explainer/poem-loop-svg-draft.html](../explainer/poem-loop-svg-draft.html); phase 2 replaces it with a real `.bpmn`.
+The real files are in [examples/poem-loop](../examples/poem-loop/brief.md).
 
 ## When the source is unclear
 
