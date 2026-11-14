@@ -33,6 +33,10 @@ Measured in phase 5 (see section 6): a fixed set of real MonoRail processes, age
 | Explainer | The interactive artifact becomes a static page in this repo | Owner finds it a handy way to see how a process maps to a diagram. |
 | Worked examples | Real MonoRail processes taken from the MonoRail repo's `CLAUDE.md` | They are the processes agents will actually be asked about. |
 | Commits | Straight to `main` while the repo is new and single-owner | Owner asked for commit/push per phase. Switch to PRs once others contribute. |
+| DMN file version | Author DMN **1.3** files | Current spec is 1.6 (1.7 beta), but the tool libraries read 1.3 only. See `docs/versions.md`. Decided 2026-11-14. |
+| Link from BPMN to DMN | A business rule task's `implementation` attribute holds `<file>.dmn#<decisionId>` | BPMN has no standard link to DMN; a relative reference is lintable. Our convention (rule BL-1). |
+| Where an app's diagrams live | The app's own repo, `docs/diagrams/<process>/` | A diagram changes with the code it describes. Proposed 2026-11-14; the owner can change it. |
+| Rule IDs | Every rule has an ID (`BP-`, `DM-`, `NM-`, `LY-`, `BL-`) | Reviews, the linter and agents can cite a rule exactly. |
 
 ## 4. The BPMN vs DMN guidance (the core of the standard)
 
@@ -108,7 +112,7 @@ Adopt in the MonoRail repo: add the pointer to its `CLAUDE.md`, and link it from
 | Phase | State | Notes |
 | --- | --- | --- |
 | 0 Setup and plan | done | |
-| 1 Written standard | not started | |
+| 1 Written standard | done | `docs/` (9 pages), `README.md`, `AGENTS.md`. Versions and bpmn-js default shape sizes verified 2026-11-14. Links checked. Spending-limit decision table rows still to be written from MonoRail's own description (phase 2). |
 | 2 Examples and explainer | not started | |
 | 3 Tooling | not started | |
 | 4 Agent entry point | not started | |
