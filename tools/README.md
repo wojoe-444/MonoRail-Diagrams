@@ -16,7 +16,7 @@ Set `DIAGRAMS_BROWSER=chrome` to use Chrome instead of Edge.
 ## Use
 
 ```
-node diagrams.mjs build  <file|folder>...    check, then lay out, then render
+node diagrams.mjs build  <file|folder>...    check, then lay out, then render  [--theme <id|all>] [--png]
 node diagrams.mjs check  <file|folder>...    lint only; exit code 1 on errors
 node diagrams.mjs layout <file|folder>...    add coordinates to the files, in place
 node diagrams.mjs render <file|folder>...    write .svg next to each file  [--png]
@@ -33,6 +33,10 @@ npm test                                      the tools' own tests
 `--png` also writes a `.png` of each render, only for looking at (the repo ignores them).
 
 Running `build` again is safe: layout replaces any earlier coordinates and gives the same result.
+
+## Themes
+
+The render's look is a theme (`plain`, `cards`, `dusk`), chosen by the nearest `diagrams.config.json` above the files or by `--theme <id>`; `--theme all` writes `name.<theme>.svg` for each, to compare. A theme is a stylesheet plus a kind class on each element, added when the SVG is drawn; it cannot change what is drawn. The rules and how they are tested: [themes.md](../docs/themes.md). `themes.mjs` holds the themes and the legibility check; `render.mjs` applies them.
 
 ## What the linter checks
 
@@ -61,7 +65,7 @@ Limits, reported with a clear message instead of guessed: lanes, text annotation
 diagrams.mjs        the command line
 lint.mjs            BPMN and DMN rules, blend checks
 feel.mjs            the FEEL subset evaluator behind the table checks
-layout-bpmn.mjs     layout-dmn.mjs     tables.mjs     render.mjs
+layout-bpmn.mjs     layout-dmn.mjs     tables.mjs     render.mjs     themes.mjs
 lib/load.mjs        reading files
 test/               node --test
 ```

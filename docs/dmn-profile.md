@@ -48,7 +48,7 @@ DMN has two views of the same model:
 - **DM-11. Requirements point to the decision that needs them.** An arrow runs from an input or a supporting decision up to the decision that consumes it.
 - **DM-12. Say what each decision answers.** Every decision has `documentation` with one sentence (the question it answers). A table may have an annotation column that explains any row whose reason is not obvious.
 - **DM-13. No order, no side effects.** Nothing in a DMN file describes when a decision runs, how often, or what happens afterwards. That is BPMN ([BL-4](bpmn-vs-dmn.md#the-blend)).
-- **DM-14. No colour.** As for BPMN, no colour in the file.
+- **DM-14. No colour.** As for BPMN, no colour in the file; a theme adds it at render time ([themes.md](themes.md)).
 
 ## Reading a decision table
 

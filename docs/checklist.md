@@ -6,7 +6,7 @@ The yes/no list used to review a diagram, by a person, by the phase 5 scoring, a
 
 - [ ] I can say in one sentence why this is BPMN, DMN, or both ([bpmn-vs-dmn.md](bpmn-vs-dmn.md)).
 - [ ] The files are real `.bpmn` / `.dmn` XML, not only pictures ([versions.md](versions.md)).
-- [ ] No colours in the files (BP-17, DM-14).
+- [ ] No colours or styles in the files (BP-17, DM-14); the render uses the project's theme and nothing was styled by hand ([themes.md](themes.md)).
 - [ ] All names follow the patterns (NM-1 to NM-9); all IDs have the right prefix and are readable (NM-10).
 - [ ] Files are kebab-case and sit in `docs/diagrams/<process>/` (NM-11, NM-12).
 - [ ] No label is longer than 40 characters (NM-9).

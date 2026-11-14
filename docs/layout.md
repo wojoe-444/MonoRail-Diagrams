@@ -13,7 +13,7 @@ A correct diagram that is hard to read still fails. These rules fix how it is la
 - **LY-7. Labels.** Task labels inside the task. Event, gateway and flow labels outside, beside the shape. A label never sits on a line.
 - **LY-8. Lanes in order of first use.** Top to bottom, in the order the roles first act.
 - **LY-9. One page.** The whole view fits a landscape page and text is at least 12 px at its drawn size. If it will not, the view is too big: BP-11 says to collapse part of it.
-- **LY-10. Nothing decorative.** No colour, custom fonts, shadows or icons beyond the notation's own markers (the gear on a service task and so on).
+- **LY-10. Nothing decorative in the model.** No colour, fonts, shadows or icons in the files beyond the notation's own markers (the gear on a service task and so on). How the render looks is the project's theme and nothing else ([themes.md](themes.md)); the geometry above is the same in every theme.
 
 ## DMN
 

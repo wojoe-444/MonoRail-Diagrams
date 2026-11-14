@@ -27,6 +27,7 @@ The goal: point an agent here and have it turn a described process into a diagra
 | [layout.md](docs/layout.md) | How diagrams are laid out |
 | [symbol-reference.md](docs/symbol-reference.md) | Every allowed shape and what it means |
 | [checklist.md](docs/checklist.md) | The review list |
+| [themes.md](docs/themes.md) | How diagrams look: plain, cards, dusk; what a theme may and may not change |
 | [versions.md](docs/versions.md) | Pinned notation versions and tools |
 | [adopting.md](docs/adopting.md) | How an app points agents here (CLAUDE.md snippet, skill) |
 
@@ -35,7 +36,7 @@ Every rule has an ID (`BP-3`, `NM-4`, `BL-2` and so on) so reviews, tools and ag
 ## Examples and tools
 
 - [examples/](examples/README.md): the poem loop, a Chat turn, and the spending limit (the blend of BPMN and DMN).
-- [explainer/index.html](explainer/index.html): open in a browser. Each example beside its brief, with what to notice. Rebuild with `node tools/build-explainer.mjs`.
+- [explainer/index.html](explainer/index.html): open in a browser. Each example beside its brief, with what to notice, in any of the three [themes](docs/themes.md). Rebuild with `node tools/build-explainer.mjs`.
 - [evals/](evals/README.md): the agent test, five real processes and a scorer.
 - [skill/](skill/SKILL.md): a Claude Code skill that finds this repository and hands over to `AGENTS.md`.
 - [templates/](templates/process.bpmn): start a new `.bpmn` or `.dmn` from these.

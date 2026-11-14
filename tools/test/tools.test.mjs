@@ -291,3 +291,138 @@ test('no message flow runs through a shape (regression: an agent-made Chat diagr
     }
   }
 });
+
+// ---------------------------------------------------------------- themes (docs/themes.md)
+
+import { THEMES, KINDS, checkTheme, contrast, cssProblems, themeCss } from '../themes.mjs';
+import { openRenderer } from '../render.mjs';
+import { tableSvg, tablesOf } from '../tables.mjs';
+import { parseDmn } from '../lib/load.mjs';
+
+test('T-4: every theme meets the legibility floor', () => {
+  for (const t of Object.values(THEMES)) assert.deepEqual(checkTheme(t), [], `theme ${t.id}`);
+});
+
+test('T-2: a theme tints only the kinds a shape already distinguishes, and has them all', () => {
+  for (const t of Object.values(THEMES)) assert.deepEqual(Object.keys(t.kinds).sort(), [...KINDS].sort(), t.id);
+});
+
+test('T-1: a stylesheet that hides, moves or re-patterns something is rejected', () => {
+  assert.deepEqual(cssProblems(themeCss(THEMES.cards)), []);
+  for (const bad of ['display: none', 'visibility: hidden', 'opacity: 0', 'transform: scale(2)', 'stroke-dasharray: 0', 'width: 400px', 'x: 10px']) {
+    assert.equal(cssProblems(`.th-task .djs-visual > rect { fill: #fff !important; ${bad} !important; }`).length, 1, bad);
+  }
+});
+
+test('checkTheme rejects a theme that is too faint or tints something new', () => {
+  const faint = { ...THEMES.cards, shape: { ...THEMES.cards.shape, outline: '#e5e7eb' } };
+  assert.ok(checkTheme(faint).some((p) => /outline/.test(p)));
+  const thin = { ...THEMES.cards, stroke: { base: 2, end: 3 } };
+  assert.ok(checkTheme(thin).some((p) => /twice/.test(p)));
+  const extra = { ...THEMES.cards, kinds: { ...THEMES.cards.kinds, error: { fill: '#ffffff', outline: '#ff0000' } } };
+  assert.ok(checkTheme(extra).some((p) => /error/.test(p)));
+  assert.ok(contrast('#000000', '#ffffff') > 20);
+});
+
+/** The nested viewer SVG without the kind classes a theme adds, so themes can be compared with plain. */
+const body = (svg) => svg.slice(svg.indexOf('<svg x="'), svg.lastIndexOf('</svg>\n<text')).replace(/ th-[a-z-]+/g, '').replace(/-[a-z0-9]{20,}/g, '-ID'); // viewers add a random suffix to marker ids
+const texts = (svg) => [...svg.matchAll(/<text[^>]*>([\s\S]*?)<\/text>/g)].map((m) => m[1].replace(/<[^>]+>/g, '').replace(/\s+/g, '')).filter(Boolean);
+
+test('T-1, T-4, T-5: a themed render differs from plain only in stylesheet and kind classes', async () => {
+  const sources = [
+    ...collectFiles([examples, path.join(examples, '..', 'templates')]),
+    path.join(here, 'fixtures', 'send-to-chat.bpmn'),
+  ];
+  const renderer = await openRenderer();
+  const { chromium } = await import('playwright-core');
+  const browser = await chromium.launch({ channel: process.env.DIAGRAMS_BROWSER || 'msedge' });
+  try {
+    const page = await browser.newPage();
+    const wellFormed = (svg) => page.evaluate((src) => new DOMParser().parseFromString(src, 'image/svg+xml').querySelector('parsererror')?.textContent ?? null, svg);
+    for (const f of sources) {
+      const xml = f.endsWith('.bpmn') ? await layoutBpmn(fs.readFileSync(f, 'utf8')) : await layoutDmn(fs.readFileSync(f, 'utf8'));
+      const draw = (theme) => (f.endsWith('.bpmn')
+        ? renderer.bpmn(xml, { title: 'T', source: 's', theme, audit: true })
+        : renderer.drd(xml, { title: 'T', source: 's', theme, audit: true }));
+      const plain = await draw('plain');
+      for (const id of Object.keys(THEMES).filter((x) => x !== 'plain')) {
+        const themed = await draw(id);
+        const label = `${path.basename(f)} in ${id}`;
+        assert.equal(await wellFormed(themed.svg), null, `${label}: not well-formed XML`);
+        assert.deepEqual(themed.offenders, [], `${label}: still in the viewer's own colour: ${themed.offenders}`);
+        assert.ok(body(themed.svg) === body(plain.svg), `${label}: differs from plain beyond classes and stylesheet`);
+        const { start, end } = themed.metrics;
+        if (start && end) assert.ok(end >= 2 * start, `${label}: end ring ${end}px is not twice the start ring ${start}px`);
+        // the dash patterns of message flows and data associations are the notation's
+        const dashed = (svg) => (svg.match(/stroke-dasharray: [^;"]*/g) ?? []).length;
+        assert.equal(dashed(themed.svg), dashed(plain.svg), `${label}: dash patterns changed`);
+      }
+      if (f.endsWith('.dmn')) {
+        const { defs } = await parseDmn(fs.readFileSync(f, 'utf8'));
+        for (const { decision, table } of tablesOf(defs)) {
+          const ref = texts(tableSvg(decision, table, 's', 'plain'));
+          for (const id of Object.keys(THEMES)) {
+            const s = tableSvg(decision, table, 's', id);
+            assert.equal(await wellFormed(s), null, `${path.basename(f)} table in ${id}: not well-formed`);
+            assert.deepEqual(texts(s), ref, `${path.basename(f)} table in ${id}: text differs from plain`);
+          }
+        }
+      }
+    }
+  } finally {
+    await browser.close();
+    await renderer.close();
+  }
+});
+
+// ---------------------------------------------------------------- choosing a theme
+
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
+
+test('the theme comes from diagrams.config.json, --theme overrides it, a typo is refused', () => {
+  const cli = path.join(here, '..', 'diagrams.mjs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'diagrams-theme-'));
+  try {
+    fs.copyFileSync(path.join(examples, 'poem-loop', 'poem-loop.bpmn'), path.join(dir, 'p.bpmn'));
+    const run = (...args) => spawnSync(process.execPath, [cli, 'render', dir, ...args], { encoding: 'utf8' });
+    const svg = () => fs.readFileSync(path.join(dir, 'p.svg'), 'utf8');
+
+    assert.equal(run().status, 0);
+    assert.ok(!svg().includes('<style>'), 'no config means plain');
+
+    fs.writeFileSync(path.join(dir, 'diagrams.config.json'), '{ "theme": "cards" }');
+    assert.equal(run().status, 0);
+    assert.ok(svg().includes('<style>') && svg().includes('th-task'), 'config picks cards');
+
+    assert.equal(run('--theme', 'plain').status, 0);
+    assert.ok(!svg().includes('<style>'), '--theme overrides the config');
+
+    assert.equal(run('--theme', 'all').status, 0);
+    for (const id of Object.keys(THEMES)) assert.ok(fs.existsSync(path.join(dir, `p.${id}.svg`)), `p.${id}.svg`);
+
+    fs.writeFileSync(path.join(dir, 'diagrams.config.json'), '{ "theme": "neon" }');
+    const bad = run();
+    assert.notEqual(bad.status, 0);
+    assert.match(bad.stderr, /unknown theme "neon"/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// ---------------------------------------------------------------- determinism
+
+test('rendering the same diagram twice gives the same bytes (so rebuilding never churns git)', async () => {
+  const renderer = await openRenderer();
+  try {
+    for (const f of [path.join(examples, 'poem-loop', 'poem-loop.bpmn'), path.join(examples, 'spending-limit', 'spending-limit-action.dmn')]) {
+      const xml = fs.readFileSync(f, 'utf8');
+      const draw = () => (f.endsWith('.bpmn')
+        ? renderer.bpmn(xml, { title: 'T', source: 's', theme: 'cards' })
+        : renderer.drd(xml, { title: 'T', source: 's', theme: 'cards' }));
+      const [a, b] = [await draw(), await draw()];
+      assert.ok(a === b, `${path.basename(f)} renders differently on a second run`);
+      assert.ok(a.endsWith('</svg>\n'), 'ends with a newline');
+    }
+  } finally { await renderer.close(); }
+});

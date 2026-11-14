@@ -20,6 +20,16 @@ That is the whole pointer: where the standard is, what to read first, where the 
 
 [skill/SKILL.md](../skill/SKILL.md) is a Claude Code skill that triggers when someone asks for a diagram or a flow, finds or clones this repository, and hands over to `AGENTS.md`. To install it for one person, copy the `skill` folder to `~/.claude/skills/monorail-diagrams/`. To ship it with an app, copy it to `<app>/.claude/skills/monorail-diagrams/`.
 
+## Choose a theme (optional)
+
+Diagrams render in the `plain` theme unless the project says otherwise. To use another, put `diagrams.config.json` next to the diagrams (or at the repository root):
+
+```json
+{ "theme": "cards" }
+```
+
+Themes are `plain`, `cards` and `dusk`; what they change, and what they may never change, is in [themes.md](themes.md). One project, one theme.
+
 ## Access
 
 This repository is private. An agent that cannot clone it must say so and ask, never draw from memory: a diagram made without the standard is the kind this repository exists to prevent. If agents on other machines need it routinely, revisit the visibility decision in [PLAN.md](../PLAN.md).

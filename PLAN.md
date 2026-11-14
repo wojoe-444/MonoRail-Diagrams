@@ -37,6 +37,7 @@ Measured in phase 5 (see section 6): a fixed set of real MonoRail processes, age
 | Link from BPMN to DMN | A business rule task's `implementation` attribute holds `<file>.dmn#<decisionId>` | BPMN has no standard link to DMN; a relative reference is lintable. Our convention (rule BL-1). |
 | Where an app's diagrams live | The app's own repo, `docs/diagrams/<process>/` | A diagram changes with the code it describes. Proposed 2026-11-14; the owner can change it. |
 | Notation for a lone decision | Deliver the `.dmn` alone (BL-11) | Found by the first agent trial: a trivial wrapper process only repeats the table. |
+| Themes | Render-time only; `plain` default, `cards` and `dusk` styled; rules T-1 to T-6 in `docs/themes.md` | Added 2026-11-14 at the owner's request: a plain technical style stays available, styled ones for other settings, "without lowering the level of rigor". A theme may set colour, type, radius, shadow and ring weight only; tests prove a themed render equals the plain one except for the stylesheet. Choice per project in `diagrams.config.json`. |
 | Rule IDs | Every rule has an ID (`BP-`, `DM-`, `NM-`, `LY-`, `BL-`) | Reviews, the linter and agents can cite a rule exactly. |
 
 ## 4. The BPMN vs DMN guidance (the core of the standard)
@@ -122,6 +123,12 @@ Done when: agents given only the pointer snippet produce diagrams that pass the 
 | 3 Tooling | done | `tools/`: lint (with decision-table evaluation and blend checks), own layouter, renderer, 20 tests. `bpmn-auto-layout` tested and rejected, see `docs/versions.md` and `tools/README.md`. Found while building: BP-18 added, templates added. |
 | 4 Agent entry point | done | `AGENTS.md`, `skill/SKILL.md` (thin: finds or clones the repo, hands over to AGENTS.md), `docs/adopting.md` with the CLAUDE.md snippet. Adopting it in the MonoRail repo itself is NOT done (see Later). |
 | 5 Prove it | done, with caveats | `evals/`: five real processes, a scorer, and the first trial (`evals/runs/2026-11-14`): 4 of 5 by today's scorer. The miss exposed a gap in the standard (BL-11, added) and the re-run passes. Caveats: agents were the same model family as the author, one attempt per case; the scorer proves the standard was followed, not that a diagram is right. A person should look at the renders. |
+
+### Added after phase 5
+
+| Addition | State | Notes |
+| --- | --- | --- |
+| Themes (`plain`, `cards`, `dusk`) | done 2026-11-14 | `tools/themes.mjs`, `docs/themes.md`. Render-time only, chosen per project in `diagrams.config.json`. Tests enforce that a themed render equals the plain one except for the stylesheet, that the stylesheet sets only allowed properties, and a contrast and ring-weight floor. `cards` is modelled on a status-board screenshot the owner supplied; end events are indigo, not red, so a normal outcome never looks like an error. The explainer has a style switch. Renders are now deterministic (marker ids numbered), so rebuilding does not churn git. |
 
 ## 8. Notes for an agent resuming this work
 

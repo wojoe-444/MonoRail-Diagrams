@@ -43,7 +43,7 @@ Adding an element to the profile is a change to this standard: edit this table, 
 - **BP-14. Every process says what it is for.** The process carries `documentation` in the form `Purpose: <one sentence>. Trigger: <one sentence>.` The linter looks for both words.
 - **BP-15. Business rule tasks follow the blend rules.** They reference a decision and are followed by a gateway, as in [bpmn-vs-dmn.md](bpmn-vs-dmn.md#the-blend) (BL-1, BL-2).
 - **BP-16. Sub-processes have their own start and end.** An embedded sub-process contains a start event and at least one end event.
-- **BP-17. No colour.** No fill or stroke colours in the file. Colour never carries meaning here. (An explainer may colour things to teach; the diagram files do not.)
+- **BP-17. No colour.** No fill or stroke colours in the file. Colour never carries meaning here. Colour is added only when the SVG is drawn, by the project's theme, and only to repeat what a shape already says ([themes.md](themes.md)).
 - **BP-18. A call that waits for an answer is one task with two message flows.** The request leaves the task and the reply returns to the same task, as in the [poem loop](../examples/poem-loop/poem-loop.bpmn). Use a send task and a receive task, or message events, only when the process does other work between sending and receiving. Why: two tasks for one call double the shapes and hide that nothing else happens in between.
 
 ## Participants in a MonoRail process
